@@ -168,13 +168,27 @@ public class GameController {
     }
     @FXML
     void OnActionSpin(ActionEvent event) {
+        double centerX=0;
+        double centerY=0;
+        double posx=0;
+        double posy=0;
         System.out.println("Girar");
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+
+        centerX = currentBoat.getRectX() + currentBoat.getRectWidth() / 2;
+        centerY = currentBoat.getRectY() + currentBoat.getRectHeight() / 2;
+        posx = centerX-currentBoat.getRectHeight()/2;
+        posy = centerY-currentBoat.getRectWidth()/2;
+
+        currentBoat.setRectX(posx);
+        currentBoat.setRectY(posy);
+
 
         // Intercambia los valores de ancho y alto en BoatModel para rotar el barco
         double temp = currentBoat.getRectWidth();
         currentBoat.setRectWidth(currentBoat.getRectHeight());
         currentBoat.setRectHeight(temp);
+
 
         redrawBoats();
     }

@@ -24,10 +24,10 @@ public class BoatModel {
 
     public void createAircraftCarrier(GraphicsContext gc) {
         if (!isInitialized) {
-            rectX = 200;
-            rectY = 365;
-            rectWidth = 25;
-            rectHeight = 100;
+            rectX = 197.5;
+            rectY = 375;
+            rectWidth = 15;
+            rectHeight = 80;
             isInitialized = true;
         }
         gc.setFill(Color.GREEN);
@@ -36,10 +36,10 @@ public class BoatModel {
 
     public void createSubmarine(GraphicsContext gc){ // 2 units, 3 boxes
         if (!isInitialized) {
-            rectX = 200;
-            rectY = 365;
-            rectWidth = 25;
-            rectHeight = 75;
+            rectX = 197.5;
+            rectY = 385;
+            rectWidth = 15;
+            rectHeight = 60;
             isInitialized = true;
         }
         gc.setFill(Color.GREEN);
@@ -47,10 +47,10 @@ public class BoatModel {
     }
     public void createDestroyer(GraphicsContext gc){ // 3 units, 2 boxes
         if (!isInitialized) {
-            rectX = 200;
-            rectY = 365;
-            rectWidth = 25;
-            rectHeight = 50;
+            rectX = 197.5;
+            rectY = 395;
+            rectWidth = 15;
+            rectHeight = 40;
             isInitialized = true;
         }
         gc.setFill(Color.GREEN);
@@ -58,10 +58,10 @@ public class BoatModel {
     }
     public void createPatrolBoat(GraphicsContext gc){ // 4 units, 1 box
         if (!isInitialized) {
-            rectX = 200;
-            rectY = 365;
-            rectWidth = 25;
-            rectHeight = 25;
+            rectX = 197.5;
+            rectY = 407.5;
+            rectWidth = 15;
+            rectHeight = 15;
             isInitialized = true;
         }
         gc.setFill(Color.GREEN);
