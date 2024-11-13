@@ -45,11 +45,13 @@ public class GameController {
     private boolean hasMoved;
     private int countboats;
 
+
     public GameController() {
         this.isSelected=false;
         this.hasMoved=false;
         this.boats = new ArrayList<>();
         this.countboats = 0;
+
 
     }
 
@@ -89,6 +91,14 @@ public class GameController {
 
         }
     }
+    public boolean selected(BoatModel boat, MouseEvent event) {
+        if (event.getX() >= boat.getRectX() && event.getX() <= boat.getRectX() + boat.getRectWidth() &&
+            event.getY() >= boat.getRectY() && event.getY() <= boat.getRectY() + boat.getRectHeight()) {
+
+            return true;
+        }
+        return false;
+    }
 
 
 
@@ -96,14 +106,15 @@ public class GameController {
         // Verificar si el clic inicial está dentro de las coordenadas y dimensiones de BoatModel
 
         for (BoatModel boat : boats) {
-            if (boat.isActive() &&
-                    event.getX() >= boat.getRectX() && event.getX() <= boat.getRectX() + boat.getRectWidth() &&
-                    event.getY() >= boat.getRectY() && event.getY() <= boat.getRectY() + boat.getRectHeight()) {
+            if (boat.isActive() &&selected(boat, event)) {
                 initialX = event.getX() - boat.getRectX();
                 initialY = event.getY() - boat.getRectY();
                 isSelected = true;
                 currentBoat = boat;
+
                 mycanvas.setCursor(Cursor.MOVE);
+
+
                 break;
             }
         }
@@ -119,7 +130,7 @@ public class GameController {
         }
     }
     private void handleMouseReleased(MouseEvent event) {
-        if (isSelected && currentBoat != null && currentBoat.isActive()) {
+        if (isSelected && currentBoat != null && currentBoat.isActive()) {//
 
             // Actualiza las coordenadas del barco existente
             currentBoat.setRectX(event.getX() - initialX);
@@ -128,12 +139,11 @@ public class GameController {
             isSelected = false;
             hasMoved = true;
             currentBoat.setActive(false);
+            //touch=false;
 
             redrawBoats();
             mycanvas.setCursor(Cursor.DEFAULT);
             createNewBoat();
-            // Limpia el canvas y redibuja el barco en la nueva posición
-            //gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
         }
     }
@@ -192,15 +202,6 @@ public class GameController {
 
         redrawBoats();
     }
-    /*private void drawBoat() {
-        // Limpia el canvas y redibuja el barco
-        gc.clearRect(0, 0, mycanvas.getWidth(), mycanvas.getHeight());
-        boat.createAircraftCarrier(gc);
-    }*/
-
-
-
-
 
 }
 
