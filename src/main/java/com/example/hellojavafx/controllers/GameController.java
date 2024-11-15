@@ -10,7 +10,12 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
+import java.util.HashMap;
+
 public class GameController {
+
+    public GameController(HashMap<String, Object>[][] positions) {
+    }
 
     @FXML
     public void initialize() {
