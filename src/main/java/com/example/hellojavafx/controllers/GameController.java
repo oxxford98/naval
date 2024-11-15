@@ -106,12 +106,6 @@ public class GameController {
                             int[] coordinates = canvas.getCoordinates();
                             int orientation = canvas.getOrientation();
                             drawBoat(coordinates[0], coordinates[1], type, orientation);
-                            System.out.println("typeBoat: " + typeBoat);
-                            System.out.println("rectx: " + rectx);
-                            System.out.println("recty: " + recty);
-                            System.out.println("orientation: " + orientation);
-                            iterador++;
-                            System.out.println("############iterador: " + iterador);
                         } else {
                             System.out.println("No hay un objeto Canvas en esta celda.");
                         }
