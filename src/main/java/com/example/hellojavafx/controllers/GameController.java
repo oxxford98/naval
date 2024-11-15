@@ -22,7 +22,7 @@ public class GameController {
     private boolean isHumanTurn;
 
     @FXML
-    private Pane PaneBattle; // Add a Pane to the FXML file and link it here
+    private Canvas mycanvas;
     private GraphicsContext gc;
     private int typeBoat;
     private double rectx;
@@ -42,11 +42,9 @@ public class GameController {
         this.orientation = 0;
     }
     public void initialize() {
-        Canvas mycanvas = new Canvas(250, 250);
         gc = mycanvas.getGraphicsContext2D();
-
-        mycanvas.setLayoutX(70);
-        mycanvas.setLayoutY(80);
+//        Image backgroundImage = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/fondo.jpg"));
+//        gc.drawImage(backgroundImage, 0, 0, mycanvas.getWidth(), mycanvas.getHeight());
         mycanvas.setStyle("-fx-background-color: blue;");
         // Draw the background color
         gc.setFill(javafx.scene.paint.Color.BLUE);
@@ -55,11 +53,10 @@ public class GameController {
         // Draw the grid lines
         gc.setStroke(javafx.scene.paint.Color.WHITE);
         for (int i = 0; i <= 250; i += 25) {
-            gc.strokeLine(i, 0, i, 250); // Vertical lines
-            gc.strokeLine(0, i, 250, i); // Horizontal lines
+            gc.strokeLine(i, 0, i, 250);
+            gc.strokeLine(0, i, 250, i);
         }
         setobjetoHashMap(positions);
-        PaneBattle.getChildren().add(mycanvas); // Add the Canvas to the Pane
     }
 
     public void handleAttack(int row, int col) {
