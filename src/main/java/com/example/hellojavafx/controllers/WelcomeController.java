@@ -62,6 +62,7 @@ public class WelcomeController {
                 positions[i][j] = new HashMap<>();
                 positions[i][j].put("type", 0);
                 positions[i][j].put("used", 0);
+                positions[i][j].put("type", 0);
             }
         }
         return positions;
