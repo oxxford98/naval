@@ -78,10 +78,43 @@ public class GameController {
                 javafx.scene.control.Button button = new javafx.scene.control.Button();
                 button.setMinSize(25, 25);
                 button.setMaxSize(25, 25);
-                button.setOnAction(this::getPositionAttack);
+                button.setOnAction(this::testPositionAttack);
                 paneAttack.add(button, i, j);
             }
         }
+    }
+
+    public void testPositionAttack(ActionEvent actionEvent) {
+        Button button = (Button) actionEvent.getSource();
+        int row = GridPane.getRowIndex(button);
+        int col = GridPane.getColumnIndex(button);
+        Random random = new Random();
+        int status = random.nextInt(3);
+        String image = "";
+        if (status == 0) {
+            image = "x.png";
+        }
+        if (status == 1) {
+            image = "tocado.png";
+        }
+        if (status == 2) {
+            image = "hundido.png";
+        }
+        System.out.println("Human attacks (" + row + ", " + col + "), status: " + status + ", image: " + image);
+        Image img = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/" + image));
+        ImageView imageView = new ImageView(img);
+        imageView.setFitWidth(25);
+        imageView.setFitHeight(25);
+        button.setGraphic(imageView);
+    }
+
+    private void drawCanvasAttack(int row, int col, String image) {
+        Button button = (Button) getNodeByRowColumnIndex(row, col, paneAttack);
+        Image img = new Image("@images/"+image);
+        ImageView imageView = new ImageView(img);
+        imageView.setFitWidth(25);
+        imageView.setFitHeight(25);
+        button.setGraphic(imageView);
     }
 
     private void getPositionAttack(ActionEvent actionEvent) {
@@ -89,14 +122,14 @@ public class GameController {
         int row = GridPane.getRowIndex(button);
         int col = GridPane.getColumnIndex(button);
         HashMap<String, Object> response = handleAttack(row, col);
-        int[][] buttons = (int[][]) response.get("buttons");
+        int[][] buttons = (int[][]) response.get("items");
         int status = (int) response.get("status");
         String image = (String) response.get("image");
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons[i].length; j++) {
                 if (buttons[i][j] == 1) {
                     Button button1 = (Button) getNodeByRowColumnIndex(i, j, paneAttack);
-                    Image img = new Image("@images/"+image);
+                    Image img = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/" + image));
                     ImageView imageView = new ImageView(img);
                     imageView.setFitWidth(25);
                     imageView.setFitHeight(25);
@@ -259,8 +292,5 @@ public class GameController {
             printRobotBoard();
         }
     }
-
-
-
 
 }
