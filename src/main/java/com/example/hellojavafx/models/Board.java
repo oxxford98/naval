@@ -56,7 +56,7 @@ public class Board {
                 result.put("items", new String[]{"x.png"});
             } else if (type == 1) {
                 result.put("status", 2);
-                result.put("items", new String[]{"destruido.png"});
+                result.put("items", new String[]{"hundido.png"});
             } else {
                 result.put("status", 1);
                 result.put("items", new String[]{"tocado.png"});

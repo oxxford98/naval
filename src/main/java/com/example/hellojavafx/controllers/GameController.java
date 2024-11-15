@@ -1,5 +1,7 @@
 package com.example.hellojavafx.controllers;
+import com.example.hellojavafx.models.HumanPlayer;
 import com.example.hellojavafx.models.MyCanvas;
+import com.example.hellojavafx.models.RobotPlayer;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -9,16 +11,15 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import com.example.hellojavafx.models.Board;
 
 public class GameController {
+    private HumanPlayer humanPlayer;
     private Board HumanPlayerBoard;
-    private Board robotPlayerBoard;
+    private RobotPlayer robotPlayer;
     private boolean isHumanTurn;
 
     @FXML
@@ -57,10 +58,19 @@ public class GameController {
             gc.strokeLine(0, i, 250, i);
         }
         setobjetoHashMap(positions);
+
+        HumanPlayer humanPlayer = new HumanPlayer("human", HumanPlayerBoard);
+        robotPlayer = new RobotPlayer("robot");
+        printBoard();
+        System.out.println("tablero robot a partir de aqui");
+        printRobotBoard();
+        startGame();
+
+
     }
 
     public void handleAttack(int row, int col) {
-        Board currentBoard = isHumanTurn ? robotPlayerBoard : HumanPlayerBoard;
+        Board currentBoard = isHumanTurn ? robotPlayer.getBoard() : HumanPlayerBoard;
         HashMap<String, Object> result = currentBoard.validateAttack(row, col);
         int status = (int) result.get("status");
 
@@ -82,6 +92,15 @@ public class GameController {
 
     private void printBoard() {
         for (ArrayList<HashMap<String, Object>> row : HumanPlayerBoard.getBoard()) {
+            for (HashMap<String, Object> cell : row) {
+                System.out.print(cell + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public void printRobotBoard() {
+        for (ArrayList<HashMap<String, Object>> row : robotPlayer.getBoard().getBoard()) {
             for (HashMap<String, Object> cell : row) {
                 System.out.print(cell + " ");
             }
@@ -165,6 +184,36 @@ public class GameController {
         }
 
     }
+
+    private void robotAttack(){
+        Random random = new Random();
+        int row, col;
+        do{
+            row = random.nextInt(10);
+            col = random.nextInt(10);
+        }while ((int) HumanPlayerBoard.getBoard().get(row).get(col).get("used") == 1);
+
+        handleAttack(row, col);
+    }
+
+    public void startGame() {
+        for (int i = 0; i < 5; i++) {
+            if (isHumanTurn()) {
+                Random random = new Random();
+                int row = random.nextInt(10);
+                int col = random.nextInt(10);
+                handleAttack(row, col);
+                System.out.println("Human attacks (" + row + ", " + col + ")");
+            } else {
+                robotAttack();
+                System.out.println("Robot attacks");
+            }
+            printBoard();
+            printRobotBoard();
+        }
+    }
+
+
 
 
 }
