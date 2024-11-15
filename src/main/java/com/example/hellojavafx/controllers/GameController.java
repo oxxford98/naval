@@ -12,9 +12,14 @@ import javafx.scene.layout.Pane;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import com.example.hellojavafx.models.Board;
 
 public class GameController {
+    private Board HumanPlayerBoard;
+    private Board robotPlayerBoard;
+    private boolean isHumanTurn;
 
     @FXML
     private Pane PaneBattle; // Add a Pane to the FXML file and link it here
@@ -28,6 +33,8 @@ public class GameController {
     private HashMap<String, Object>[][] positions;
 
     public GameController(HashMap<String, Object>[][] positions) {
+        this.HumanPlayerBoard = new Board(positions);
+        this.isHumanTurn = true;
         this.positions = positions;
         this.typeBoat = 0;
         this.rectx = 0;
@@ -55,6 +62,40 @@ public class GameController {
         PaneBattle.getChildren().add(mycanvas); // Add the Canvas to the Pane
     }
 
+    public void handleAttack(int row, int col) {
+        Board currentBoard = isHumanTurn ? robotPlayerBoard : HumanPlayerBoard;
+        HashMap<String, Object> result = currentBoard.validateAttack(row, col);
+        int status = (int) result.get("status");
+
+        // Si el ataque falla (status = 0), cambia el turno
+        if (status == 0) {
+            changeTurn();
+        }
+
+        // Actualiza la vista del juego según el resultado del ataque
+    }
+
+    private void changeTurn() {
+        isHumanTurn = !isHumanTurn;
+    }
+
+    public boolean isHumanTurn() {
+        return isHumanTurn;
+    }
+
+    private void printBoard() {
+        for (ArrayList<HashMap<String, Object>> row : HumanPlayerBoard.getBoard()) {
+            for (HashMap<String, Object> cell : row) {
+                System.out.print(cell + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public Board getHumanPlayerBoard() {
+        return HumanPlayerBoard;
+    }
+  
     public void setobjetoHashMap(HashMap<String, Object>[][] array) {
 
         for (int i = 0; i < array.length; i++) {
