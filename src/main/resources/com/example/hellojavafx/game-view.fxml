@@ -104,9 +104,5 @@
                 <Label alignment="CENTER" prefHeight="26.0" prefWidth="28.0" text="J" />
             </children>
         </VBox>
-      <Label layoutX="73.0" layoutY="465.0" text="4" />
-      <Label layoutX="156.0" layoutY="465.0" text="3" />
-      <Label layoutX="240.0" layoutY="465.0" text="2" />
-      <Label layoutX="327.0" layoutY="465.0" text="1" />
     </children>
 </Pane>

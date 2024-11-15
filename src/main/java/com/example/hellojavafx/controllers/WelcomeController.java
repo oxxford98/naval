@@ -26,15 +26,18 @@ public class WelcomeController {
 
     @FXML
     private GridPane paneBattle;
+    @FXML
+    private Button btnStartGame;
+    @FXML
+    private Label lblFrigate, lblDestroyer, lblSubmarine, lblAircraft;
 
 
 
 
     private int orientation = 1;
     private int size = 1;
-    private boolean showBoard = false;
-    private Image floatingImage;
     private HashMap<String, Object>[][] positions;
+    private int frigateCount = 0, destroyerCount = 0, submarineCount = 0, aircraftCount = 0;
 
     /**
      * Inicia el juego con el tamaño especificado.
@@ -91,6 +94,10 @@ public class WelcomeController {
     }
 
     private void handleButtonAction(ActionEvent actionEvent) {
+        if (isCompleteBoard()) {
+            new AlertBox().showAlert("Error", "Tablero completado", "Ya has completado el tablero y puedes iniciar un juego nuevo");
+            return;
+        }
         Button button = (Button) actionEvent.getSource();
         Integer row = GridPane.getRowIndex(button);
         Integer col = GridPane.getColumnIndex(button);
@@ -100,6 +107,7 @@ public class WelcomeController {
         }
 
         boolean isValid = true;
+        boolean isAll = false;
         for (int i = 0; i < size; i++) {
             int targetRow = row + (orientation == 0 ? i : 0);
             int targetCol = col + (orientation == 1 ? i : 0);
@@ -107,6 +115,37 @@ public class WelcomeController {
                 isValid = false;
                 break;
             }
+        }
+
+        switch (size) {
+            case 1:
+                if (frigateCount >= 4) {
+                    isValid = false;
+                    isAll = true;
+                    new AlertBox().showAlert("Error", null, "Ya no puedes usar mas fragatas");
+                }
+                break;
+            case 2:
+                if (destroyerCount >= 3) {
+                    isValid = false;
+                    isAll = true;
+                    new AlertBox().showAlert("Error", null, "Ya no puedes usar mas destructores");
+                }
+                break;
+            case 3:
+                if (submarineCount >= 2) {
+                    isValid = false;
+                    isAll = true;
+                    new AlertBox().showAlert("Error", null, "Ya no puedes usar mas submarinos");
+                }
+                break;
+            case 4:
+                if (aircraftCount >= 1) {
+                    isValid = false;
+                    isAll = true;
+                    new AlertBox().showAlert("Error", null, "Ya no puedes usar mas portaaviones");
+                }
+                break;
         }
 
         if (isValid) {
@@ -129,11 +168,38 @@ public class WelcomeController {
                 positions[targetRow][targetCol].put("coordinates", coordinates);
             }
             positions[row][col].put("canvas", new MyCanvas(new int[] {col*25, row*25}, orientation));
+            switch (size) {
+                case 1:
+                    frigateCount++;
+                    break;
+                case 2:
+                    destroyerCount++;
+                    break;
+                case 3:
+                    submarineCount++;
+                    break;
+                case 4:
+                    aircraftCount++;
+                    break;
+            }
+            int[][] coords = (int[][]) positions[row][col].get("coordinates");
+            for (int i = 0; i < coords.length; i++) {
+                System.out.println("Coordinates: " + coords[i][0] + ", " + coords[i][1]);
+            }
             System.out.println("Valid position: row " + row + ", col " + col);
-            printPositions();
         } else {
+            if (!isAll) {
+                new AlertBox().showAlert("Error", "Posicion invalida", "No puedes colocar la pieza en esa posicion");
+            }
             System.out.println("Invalid position: row " + row + ", col " + col);
         }
+        if (isCompleteBoard()) {
+            btnStartGame.setDisable(false);
+        }
+    }
+
+    private boolean isCompleteBoard() {
+        return frigateCount == 4 && destroyerCount == 3 && submarineCount == 2 && aircraftCount == 1;
     }
 
     private void printPositions() {
@@ -146,46 +212,45 @@ public class WelcomeController {
 
     private void handleMouseHover(MouseEvent event, int row, int col) {
         System.out.println("Hovered over button at row: " + row + ", col: " + col);
-        changeButtonColors(col, row);
-    }
-
-    private void handleMouseMoved(MouseEvent event) {
-        System.out.println("Mouse moved");
-        int row = (int) (event.getY() / 25);
-        int col = (int) (event.getX() / 25);
-        changeButtonColors(row, col);
+        if (!isCompleteBoard()) {
+            changeButtonColors(col, row);
+        }
     }
 
     public void handleCreateFrigate() {
-        startSelection(1, orientation);
-
-        size = 1;
-        orientation = (orientation == 1) ? 0 : 1;
+        if (frigateCount >= 4) {
+            System.out.print("Frigate limit reached");
+        } else {
+            size = 1;
+            orientation = (orientation == 1) ? 0 : 1;
+        }
     }
 
     public void handleCreateDestroyer() {
-        startSelection(2, orientation);
-        size = 2;
-        orientation = (orientation == 1) ? 0 : 1;
+        if (destroyerCount >= 3) {
+            System.out.print("Destroyer limit reached");
+        } else {
+            size = 2;
+            orientation = (orientation == 1) ? 0 : 1;
+        }
     }
 
     public void handleCreateSubmarine() {
-        startSelection(3, orientation);
-        size = 3;
-        orientation = (orientation == 1) ? 0 : 1;
+        if (submarineCount >= 2) {
+            System.out.print("Submarine limit reached");
+        } else {
+            size = 3;
+            orientation = (orientation == 1) ? 0 : 1;
+        }
     }
 
     public void handleCreateAircraft() {
-        startSelection(4, orientation);
-        size = 4;
-        orientation = (orientation == 1) ? 0 : 1;
-        floatingImage = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/4.png"));
-        showBoard = true;
-    }
-
-    public void startSelection(int size, int orientation) {
-        this.size = size;
-        this.orientation = orientation;
+        if (aircraftCount >= 1) {
+            System.out.print("Aircraft limit reached");
+        } else {
+            size = 4;
+            orientation = (orientation == 1) ? 0 : 1;
+        }
     }
 
     private void changeButtonColors(int row, int col) {
