@@ -31,9 +31,6 @@ public class WelcomeController {
     @FXML
     private Label lblFrigate, lblDestroyer, lblSubmarine, lblAircraft;
 
-
-
-
     private int orientation = 1;
     private int size = 1;
     private HashMap<String, Object>[][] positions;
@@ -63,7 +60,9 @@ public class WelcomeController {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 positions[i][j] = new HashMap<>();
+                positions[i][j].put("type", 0);
                 positions[i][j].put("used", 0);
+                positions[i][j].put("type", 0);
             }
         }
         return positions;
@@ -211,7 +210,6 @@ public class WelcomeController {
     }
 
     private void handleMouseHover(MouseEvent event, int row, int col) {
-        System.out.println("Hovered over button at row: " + row + ", col: " + col);
         if (!isCompleteBoard()) {
             changeButtonColors(col, row);
         }

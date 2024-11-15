@@ -1,30 +1,34 @@
 package com.example.hellojavafx.controllers;
+import com.example.hellojavafx.models.HumanPlayer;
 import com.example.hellojavafx.models.MyCanvas;
+import com.example.hellojavafx.models.RobotPlayer;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.canvas.Canvas;
 
 import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import com.example.hellojavafx.models.Board;
 
 public class GameController {
+    private HumanPlayer humanPlayer;
     private Board HumanPlayerBoard;
-    private Board robotPlayerBoard;
+    private RobotPlayer robotPlayer;
     private boolean isHumanTurn;
 
     @FXML
     private Canvas mycanvas;
     @FXML
-    private Pane PaneBattle;
+    private GridPane paneAttack;
     private GraphicsContext gc;
     private int typeBoat;
     private double rectx;
@@ -71,10 +75,60 @@ public class GameController {
         // Draw the grid lines
 
         setobjetoHashMap(positions);
+        HumanPlayer humanPlayer = new HumanPlayer("human", HumanPlayerBoard);
+        robotPlayer = new RobotPlayer("robot");
+        printBoard();
+        System.out.println("tablero robot a partir de aqui");
+        printRobotBoard();
+        startGame();
+        addButtons();
     }
 
-    public void handleAttack(int row, int col) {
-        Board currentBoard = isHumanTurn ? robotPlayerBoard : HumanPlayerBoard;
+    public void addButtons() {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                javafx.scene.control.Button button = new javafx.scene.control.Button();
+                button.setMinSize(25, 25);
+                button.setMaxSize(25, 25);
+                button.setOnAction(this::getPositionAttack);
+                paneAttack.add(button, i, j);
+            }
+        }
+    }
+
+    private void getPositionAttack(ActionEvent actionEvent) {
+        Button button = (Button) actionEvent.getSource();
+        int row = GridPane.getRowIndex(button);
+        int col = GridPane.getColumnIndex(button);
+        HashMap<String, Object> response = handleAttack(row, col);
+        int[][] buttons = (int[][]) response.get("buttons");
+        int status = (int) response.get("status");
+        String image = (String) response.get("image");
+        for (int i = 0; i < buttons.length; i++) {
+            for (int j = 0; j < buttons[i].length; j++) {
+                if (buttons[i][j] == 1) {
+                    Button button1 = (Button) getNodeByRowColumnIndex(i, j, paneAttack);
+                    Image img = new Image("@images/"+image);
+                    ImageView imageView = new ImageView(img);
+                    imageView.setFitWidth(25);
+                    imageView.setFitHeight(25);
+                    button1.setGraphic(imageView);
+                }
+            }
+        }
+    }
+
+    private Object getNodeByRowColumnIndex(int i, int j, GridPane paneAttack) {
+        for (Node node : paneAttack.getChildren()) {
+            if (GridPane.getRowIndex(node) == i && GridPane.getColumnIndex(node) == j) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    public HashMap<String, Object> handleAttack(int row, int col) {
+        Board currentBoard = isHumanTurn ? robotPlayer.getBoard() : HumanPlayerBoard;
         HashMap<String, Object> result = currentBoard.validateAttack(row, col);
         int status = (int) result.get("status");
 
@@ -84,6 +138,7 @@ public class GameController {
         }
 
         // Actualiza la vista del juego según el resultado del ataque
+        return result;
     }
 
     private void changeTurn() {
@@ -96,6 +151,15 @@ public class GameController {
 
     private void printBoard() {
         for (ArrayList<HashMap<String, Object>> row : HumanPlayerBoard.getBoard()) {
+            for (HashMap<String, Object> cell : row) {
+                System.out.print(cell + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public void printRobotBoard() {
+        for (ArrayList<HashMap<String, Object>> row : robotPlayer.getBoard().getBoard()) {
             for (HashMap<String, Object> cell : row) {
                 System.out.print(cell + " ");
             }
@@ -173,6 +237,36 @@ public class GameController {
         }
 
     }
+
+    private void robotAttack(){
+        Random random = new Random();
+        int row, col;
+        do{
+            row = random.nextInt(10);
+            col = random.nextInt(10);
+        }while ((int) HumanPlayerBoard.getBoard().get(row).get(col).get("used") == 1);
+
+        handleAttack(row, col);
+    }
+
+    public void startGame() {
+        for (int i = 0; i < 5; i++) {
+            if (isHumanTurn()) {
+                Random random = new Random();
+                int row = random.nextInt(10);
+                int col = random.nextInt(10);
+                handleAttack(row, col);
+                System.out.println("Human attacks (" + row + ", " + col + ")");
+            } else {
+                robotAttack();
+                System.out.println("Robot attacks");
+            }
+            printBoard();
+            printRobotBoard();
+        }
+    }
+
+
 
 
 }
