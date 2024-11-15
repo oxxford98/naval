@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<VBox alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="319.0" prefWidth="369.0" spacing="10.0" style="-fx-background-color: white;" stylesheets="@css/primer-light.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hellojavafx.controllers.WelcomeController">
+   <children>
+      <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+           <image>
+               <Image url="@images/icono.png" />
+           </image>
+      </ImageView>
+      <Label text="Bienvenido al juego de Guerra Naval" />
+      <Button fx:id="btnStartGame" onAction="#startGame" mnemonicParsing="false" text="Jugar Ahora" />
+      <Button fx:id="btnViewInstructions" onAction="#openInstructions" mnemonicParsing="false" prefHeight="33.0" prefWidth="176.0" text="Instrucciones del Juego" />
+   </children>
+</VBox>
