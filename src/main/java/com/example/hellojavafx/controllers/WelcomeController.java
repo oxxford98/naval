@@ -27,6 +27,9 @@ public class WelcomeController {
     @FXML
     private GridPane paneBattle;
 
+
+
+
     private int orientation = 1;
     private int size = 1;
     private boolean showBoard = false;
