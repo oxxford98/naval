@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
@@ -19,7 +20,7 @@
          </image>
       </ImageView>
       <Button fx:id="btnViewInstructions" layoutX="386.0" layoutY="134.0" mnemonicParsing="false" onAction="#openInstructions" prefHeight="33.0" prefWidth="201.0" text="Instrucciones del Juego" />
-      <Button fx:id="btnStartGame" onAction="#startGame" layoutX="443.0" layoutY="72.0" mnemonicParsing="false" text="Jugar Ahora" />
+      <Button fx:id="btnStartGame" disable="true" layoutX="443.0" layoutY="72.0" mnemonicParsing="false" onAction="#startGame" text="Nuevo Juego" />
       <Label layoutX="148.0" layoutY="55.0" text="Bienvenido al juego de Guerra Naval" />
        <GridPane fx:id="paneBattle" layoutX="70.0" layoutY="115.0" prefHeight="250.0" prefWidth="250.0">
        </GridPane>
@@ -59,5 +60,26 @@
                </ImageView>
            </graphic>
        </Button>
+      <Button layoutX="420.0" layoutY="205.0" mnemonicParsing="false" text="Cargar Juego anterior" />
+      <Label id="lblFrigate" layoutX="80.0" layoutY="527.0" text="4">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label id="lblDestroyer" layoutX="178.0" layoutY="527.0" text="3">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label id="lblSubmarine" layoutX="275.0" layoutY="527.0" text="2">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label id="lblAircraft" layoutX="373.0" layoutY="527.0" text="1">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
    </children>
 </Pane>
