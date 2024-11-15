@@ -1,1 +1,0 @@
-moduleSearchIndex = [{"l":"com.example.hellojavafx"}];updateSearchResults();
