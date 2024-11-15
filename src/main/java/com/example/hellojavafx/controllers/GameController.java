@@ -23,6 +23,8 @@ public class GameController {
 
     @FXML
     private Canvas mycanvas;
+    @FXML
+    private Pane PaneBattle;
     private GraphicsContext gc;
     private int typeBoat;
     private double rectx;
@@ -43,19 +45,31 @@ public class GameController {
     }
     public void initialize() {
         gc = mycanvas.getGraphicsContext2D();
-//        Image backgroundImage = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/fondo.jpg"));
-//        gc.drawImage(backgroundImage, 0, 0, mycanvas.getWidth(), mycanvas.getHeight());
+        Image backgroundImage2 = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/hundido.png"));
+        ImageView imageView = new ImageView(backgroundImage2);
+
+        imageView.setFitWidth(PaneBattle.getWidth());  // Usar el tamaño del PaneBattle
+        imageView.setFitHeight(PaneBattle.getHeight()); // Ajusta el alto según el tamaño del Pane
+
+        // Establecer la posición de la imagen para que cubra todo el fondo
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);       // Habilitar suavizado para la imagen
+
+        // Agregar el ImageView al Pane
+        PaneBattle.getChildren().add(imageView);
+
+        Image backgroundImage = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/fondo.png"));
+        gc.drawImage(backgroundImage, 0, 0, mycanvas.getWidth(), mycanvas.getHeight());
         mycanvas.setStyle("-fx-background-color: blue;");
         // Draw the background color
-        gc.setFill(javafx.scene.paint.Color.BLUE);
-        gc.fillRect(0, 0, 250, 250);
-
-        // Draw the grid lines
-        gc.setStroke(javafx.scene.paint.Color.WHITE);
+        gc.setStroke(javafx.scene.paint.Color.BLACK);
         for (int i = 0; i <= 250; i += 25) {
             gc.strokeLine(i, 0, i, 250);
             gc.strokeLine(0, i, 250, i);
         }
+
+        // Draw the grid lines
+
         setobjetoHashMap(positions);
     }
 
