@@ -1,16 +1,24 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Model.BoardModel;
 import com.example.demo.Model.BoatModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +39,15 @@ public class GameController {
 
     @FXML
     private Pane PaneBattle;
+    @FXML
+    private GridPane gridpane1;
 
     @FXML
     private Canvas mycanvas;
     private List<BoatModel> boats;
 
     BoatModel currentBoat;
+    BoardModel board;
     GraphicsContext gc;
 
     private double initialX;
@@ -44,6 +55,9 @@ public class GameController {
     private boolean isSelected;
     private boolean hasMoved;
     private int countboats;
+    private double posx;
+    private double posy;
+    private Group boatGroup;
 
 
     public GameController() {
@@ -51,40 +65,46 @@ public class GameController {
         this.hasMoved=false;
         this.boats = new ArrayList<>();
         this.countboats = 0;
+        this.posx=0;
+        this.posy=0;
+        this.board = new BoardModel();
+        this.boatGroup = new Group();
 
 
     }
 
     @FXML
     public void initialize() {
-        //boat = new BoatModel();
-        gc = mycanvas.getGraphicsContext2D();
-        configCanvas();
-        //boat.createAircraftCarrier(gc);
+
+        board.configgridpane(gridpane1);
+
+        configevent();
         createNewBoat();
-
     }
-    public void configCanvas(){
+    public void configevent(){
 
-        mycanvas.setOnMousePressed(this::handleMousePressed);
-        mycanvas.setOnMouseDragged(this::handleMouseDragged);
-        mycanvas.setOnMouseReleased(this::handleMouseReleased);
+        PaneBattle.setOnMousePressed(this::handleMousePressed);
+        PaneBattle.setOnMouseDragged(this::handleMouseDragged);
+        PaneBattle.setOnMouseReleased(this::handleMouseReleased);
+
     }
     private void createNewBoat() {
         if (boats.size() < 10) {
             System.out.println(countboats);
             currentBoat = new BoatModel();
             boats.add(currentBoat);
+            boatGroup = currentBoat.getBoatGroup();
             if(countboats==0){
-                currentBoat.createAircraftCarrier(gc);
+                currentBoat.createAircraftCarrier();
             }if(countboats==1||countboats==2) {
-                currentBoat.createSubmarine(gc);
+                currentBoat.createSubmarine();
             }if (countboats>=3 &&countboats<=5){
-                currentBoat.createDestroyer(gc);
+                currentBoat.createDestroyer();
             }if(countboats>=6 &&countboats<=9) {
-                currentBoat.createPatrolBoat(gc);
+                currentBoat.createPatrolBoat();
             }
-
+            positionBoat();
+            PaneBattle.getChildren().add(currentBoat.getBoatGroup());
             isSelected = true;
             hasMoved = false;
             countboats++;
@@ -112,7 +132,10 @@ public class GameController {
                 isSelected = true;
                 currentBoat = boat;
 
-                mycanvas.setCursor(Cursor.MOVE);
+                posx = boat.getRectX();
+                posy = boat.getRectY();
+
+                PaneBattle.setCursor(Cursor.MOVE);
 
 
                 break;
@@ -126,7 +149,12 @@ public class GameController {
             // Actualiza las coordenadas del barco en BoatModel
             currentBoat.setRectX(event.getX() - initialX);
             currentBoat.setRectY(event.getY() - initialY);
+            //board.paintBoard((Rectangle) currentBoat.getBoatGroup().getChildren().get(0));
+
             redrawBoats();
+
+
+
         }
     }
     private void handleMouseReleased(MouseEvent event) {
@@ -136,33 +164,93 @@ public class GameController {
             currentBoat.setRectX(event.getX() - initialX);
             currentBoat.setRectY(event.getY() - initialY);
 
-            isSelected = false;
-            hasMoved = true;
-            currentBoat.setActive(false);
-            //touch=false;
+            if(insidematrix() && insidebox()&& superimposed()) {
+                isSelected = false;
+                hasMoved = true;
+                currentBoat.setActive(false);
+                //touch=false;
+                board.paintBoard((Rectangle) currentBoat.getBoatGroup().getChildren().get(0));
+                System.out.println(currentBoat.getBoatGroup().getChildren().get(0).getBoundsInParent());
+                System.out.println(currentBoat.getBoatGroup().getChildren().get(0).getBoundsInLocal());
+                System.out.println(currentBoat.getBoatGroup().getChildren().get(0).getLayoutBounds());
 
-            redrawBoats();
-            mycanvas.setCursor(Cursor.DEFAULT);
-            createNewBoat();
+                redrawBoats();
+                PaneBattle.setCursor(Cursor.DEFAULT);
+                createNewBoat();
+            }else {
+                currentBoat.setRectX(posx);
+                System.out.println(posx);
+                currentBoat.setRectY(posy);
+                System.out.println(posy);
+                redrawBoats();
+                System.out.println(currentBoat.getBoatGroup().getChildren().get(0).getBoundsInParent());//obtengo el rectangulo del barco
+
+            }
 
         }
     }
-    private void redrawBoats() {
-        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-        for (BoatModel boat : boats) {
-            // Dibujar solo los barcos que ya están inicializados
-            if (boat.isInitialized()) {
-                if(countboats==0){
-                    boat.createAircraftCarrier(gc);
-                }if(countboats==1||countboats==2) {
-                    boat.createSubmarine(gc);
-                }if (countboats>=3 &&countboats<=5){
-                    boat.createDestroyer(gc);
-                }if(countboats>=6) {
-                    boat.createPatrolBoat(gc);
+    public boolean insidematrix(){
+        if(currentBoat.getRectX()>=70 && currentBoat.getRectX()+ currentBoat.getRectWidth()<=320 && currentBoat.getRectY()>=76 && currentBoat.getRectY()+ currentBoat.getRectHeight()<=326){
+            return true;
+        }
+        return false;
+    }
+    public boolean insidebox(){
+        if (currentBoat.getRectWidth()==15&& currentBoat.getRectHeight()==15){
+            for(int i=70;i<=320;i+=25){
+                for(int j=76;j<=326;j+=25){
+                    if(currentBoat.getRectX()>i && currentBoat.getRectX()+ currentBoat.getRectWidth()<i+25 && currentBoat.getRectY()>j && currentBoat.getRectY()+ currentBoat.getRectHeight()<j+25){
+                        return true;
+                    }
+                }
+            }
+
+        }else if(currentBoat.getRectWidth() < currentBoat.getRectHeight()) { // vertical
+            for(int i = 70; i <= 320; i += 25) {
+                if(currentBoat.getRectX() > i && currentBoat.getRectX() + currentBoat.getRectWidth() < i + 25) {
+                    return true;
+                }
+            }
+        } else if(currentBoat.getRectWidth() > currentBoat.getRectHeight()) { // horizontal
+            for(int j = 76; j <= 326; j += 25) {
+                if(currentBoat.getRectY() > j && currentBoat.getRectY() + currentBoat.getRectHeight() < j + 25) {
+                    return true;
                 }
             }
         }
+        return false;
+    }
+    public boolean superimposed(){
+        for (BoatModel boat : boats) {
+            if (boat != currentBoat) {
+                if (currentBoat.getRectX() < boat.getRectX() + boat.getRectWidth() &&
+                        currentBoat.getRectX() + currentBoat.getRectWidth() > boat.getRectX() &&
+                        currentBoat.getRectY() < boat.getRectY() + boat.getRectHeight() &&
+                        currentBoat.getRectY() + currentBoat.getRectHeight() > boat.getRectY()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    private void redrawBoats() {
+        for (int i = 0; i < boats.size(); i++) {
+            BoatModel boat = boats.get(i);
+            // Draw only the boats that are already initialized
+            if (boat.isInitialized()) {
+
+                if (i == 0) {
+                    boat.createAircraftCarrier();
+                } else if (i == 1 || i == 2) {
+                    boat.createSubmarine();
+                } else if (i >= 3 && i <= 5) {
+                    boat.createDestroyer();
+                } else if (i >= 6) {
+                    boat.createPatrolBoat();
+                }
+            }
+        }
+
     }
 
     public void mostrar() {
@@ -171,6 +259,10 @@ public class GameController {
     @FXML
     void OnActionStart(ActionEvent event) {
         System.out.println("Iniciar");
+
+
+
+
     }
     @FXML
     void OnActionHelp(ActionEvent event) {
@@ -180,10 +272,8 @@ public class GameController {
     void OnActionSpin(ActionEvent event) {
         double centerX=0;
         double centerY=0;
-        double posx=0;
-        double posy=0;
+
         System.out.println("Girar");
-        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
         centerX = currentBoat.getRectX() + currentBoat.getRectWidth() / 2;
         centerY = currentBoat.getRectY() + currentBoat.getRectHeight() / 2;
@@ -202,6 +292,11 @@ public class GameController {
 
         redrawBoats();
     }
+    public void positionBoat(){
+         posx = currentBoat.getRectX();
+         posy = currentBoat.getRectY();
+    }
+
 
 }
 

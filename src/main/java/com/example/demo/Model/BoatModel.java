@@ -1,7 +1,15 @@
 package com.example.demo.Model;
 
+import javafx.geometry.Bounds;
+import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.TextField;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 
 public class BoatModel {
     private double rectX;
@@ -10,6 +18,8 @@ public class BoatModel {
     private double rectHeight;
     private boolean isInitialized;
     private boolean isActive;
+    private Rectangle rectangle;
+    private Group boatGroup;
 
     public BoatModel() {
         System.out.println("Barco creado");
@@ -19,9 +29,11 @@ public class BoatModel {
         this.rectHeight = 0;
         this.isInitialized = false;
         this.isActive = true;
+        this.rectangle = new Rectangle();
+        this.boatGroup = new Group();
 
     }
-
+    /*
     public void createAircraftCarrier(GraphicsContext gc) {
         if (!isInitialized) {
             rectX = 197.5;
@@ -33,7 +45,6 @@ public class BoatModel {
         gc.setFill(Color.GREEN);
         gc.fillRect(rectX, rectY, rectWidth, rectHeight);
     }
-
     public void createSubmarine(GraphicsContext gc){ // 2 units, 3 boxes
         if (!isInitialized) {
             rectX = 197.5;
@@ -67,6 +78,71 @@ public class BoatModel {
         gc.setFill(Color.GREEN);
         gc.fillRect(rectX, rectY, rectWidth, rectHeight);
     }
+    */
+    public void createAircraftCarrier() {
+        if (!isInitialized) {
+            rectX = 197.5;
+            rectY = 375;
+            rectWidth = 15;
+            rectHeight = 80;
+            isInitialized = true;
+        }
+        updateBoat(Color.SLATEGRAY);
+    }
+
+    public void createSubmarine() {
+        if (!isInitialized) {
+            rectX = 197.5;
+            rectY = 385;
+            rectWidth = 15;
+            rectHeight = 60;
+            isInitialized = true;
+        }
+        updateBoat(Color.DIMGRAY);
+    }
+
+    public void createDestroyer() {
+        if (!isInitialized) {
+            rectX = 197.5;
+            rectY = 395;
+            rectWidth = 15;
+            rectHeight = 40;
+            isInitialized = true;
+        }
+        updateBoat(Color.MAROON);
+    }
+
+    public void createPatrolBoat() {
+        if (!isInitialized) {
+            rectX = 197.5;
+            rectY = 407.5;
+            rectWidth = 15;
+            rectHeight = 15;
+            isInitialized = true;
+        }
+        updateBoat(Color.MEDIUMSLATEBLUE);
+    }
+
+    private void updateBoat(Color color) {
+        Rectangle rectangle = new Rectangle(rectX, rectY, rectWidth, rectHeight);
+        rectangle.setFill(color);
+
+
+        // Add additional shapes to the boat
+        Circle window1 = new Circle(rectX + rectWidth / 2, rectY + rectHeight / 4, 3, Color.WHITE);
+        Circle window2 = new Circle(rectX + rectWidth / 2, rectY + rectHeight / 2, 3, Color.WHITE);
+        Circle window3 = new Circle(rectX + rectWidth / 2, rectY + 3 * rectHeight / 4, 3, Color.WHITE);
+
+        boatGroup.getChildren().clear();
+
+        boatGroup.getChildren().addAll(rectangle, window1, window2, window3);// //);
+    }
+
+
+    public Group getBoatGroup() {
+        return boatGroup;
+    }
+
     public double getRectX(){
         return rectX;
     }
