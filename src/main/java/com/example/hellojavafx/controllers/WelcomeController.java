@@ -31,6 +31,9 @@ public class WelcomeController {
     @FXML
     private Label lblFrigate, lblDestroyer, lblSubmarine, lblAircraft;
 
+
+
+
     private int orientation = 1;
     private int size = 1;
     private HashMap<String, Object>[][] positions;
