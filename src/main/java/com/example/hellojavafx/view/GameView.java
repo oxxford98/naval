@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Representa la vista del juego de Sudoku.
@@ -21,11 +22,11 @@ public class GameView extends Stage {
      *
      * @throws IOException Si no se puede cargar el archivo FXML.
      */
-    public GameView() throws IOException {
+    public GameView(HashMap<String, Object>[][] positions) throws IOException {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/hellojavafx/game-view.fxml")
         );
-        loader.setController(new GameController());
+        loader.setController(new GameController(positions));
         Parent root = loader.load();
         this.gameController = loader.getController();
         this.setTitle("Guerra Naval");
