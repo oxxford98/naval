@@ -11,15 +11,53 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
-<VBox alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="319.0" prefWidth="369.0" spacing="10.0" style="-fx-background-color: white;" stylesheets="@css/primer-light.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hellojavafx.controllers.WelcomeController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="592.0" prefWidth="603.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hellojavafx.controllers.WelcomeController">
    <children>
-      <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-           <image>
-               <Image url="@images/icono.png" />
-           </image>
+      <ImageView fitHeight="76.0" fitWidth="67.0" layoutX="38.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/icono.png" />
+         </image>
       </ImageView>
-      <Label text="Bienvenido al juego de Guerra Naval" />
-      <Button fx:id="btnStartGame" onAction="#startGame" mnemonicParsing="false" text="Jugar Ahora" />
-      <Button fx:id="btnViewInstructions" onAction="#openInstructions" mnemonicParsing="false" prefHeight="33.0" prefWidth="176.0" text="Instrucciones del Juego" />
+      <Button fx:id="btnViewInstructions" layoutX="386.0" layoutY="134.0" mnemonicParsing="false" onAction="#openInstructions" prefHeight="33.0" prefWidth="201.0" text="Instrucciones del Juego" />
+      <Button fx:id="btnStartGame" onAction="#startGame" layoutX="443.0" layoutY="72.0" mnemonicParsing="false" text="Jugar Ahora" />
+      <Label layoutX="148.0" layoutY="55.0" text="Bienvenido al juego de Guerra Naval" />
+       <GridPane fx:id="paneBattle" layoutX="70.0" layoutY="115.0" prefHeight="250.0" prefWidth="250.0">
+       </GridPane>
+       <Button fx:id="createFrigate" contentDisplay="TOP" layoutX="41.0" layoutY="379.0" mnemonicParsing="false" onAction="#handleCreateFrigate" prefHeight="139.0" prefWidth="88.0" text="Fragata">
+           <graphic>
+               <ImageView fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                   <image>
+                       <Image url="@images/1.png" />
+                   </image>
+               </ImageView>
+           </graphic>
+       </Button>
+       <Button contentDisplay="TOP" layoutX="139.0" layoutY="380.0" mnemonicParsing="false" onAction="#handleCreateDestroyer" prefHeight="139.0" prefWidth="88.0" text="Destructor">
+           <graphic>
+               <ImageView fitHeight="100.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
+                   <image>
+                       <Image url="@images/2.png" />
+                   </image>
+               </ImageView>
+           </graphic>
+       </Button>
+       <Button contentDisplay="TOP" layoutX="236.0" layoutY="381.0" mnemonicParsing="false" onAction="#handleCreateSubmarine" prefHeight="139.0" prefWidth="88.0" text="Submarino">
+           <graphic>
+               <ImageView fitHeight="98.0" fitWidth="68.0" pickOnBounds="true" preserveRatio="true">
+                   <image>
+                       <Image url="@images/3.png" />
+                   </image>
+               </ImageView>
+           </graphic>
+       </Button>
+       <Button contentDisplay="TOP" layoutX="334.0" layoutY="382.0" mnemonicParsing="false" onAction="#handleCreateAircraft" prefHeight="139.0" prefWidth="88.0" styleClass="information" text="Portaviones">
+           <graphic>
+               <ImageView fitHeight="97.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="bg-success-emphasis">
+                   <image>
+                       <Image url="@images/4.png" />
+                   </image>
+               </ImageView>
+           </graphic>
+       </Button>
    </children>
-</VBox>
+</Pane>

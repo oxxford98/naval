@@ -1,5 +1,6 @@
 package com.example.hellojavafx.controllers;
 
+import com.example.hellojavafx.models.MyCanvas;
 import com.example.hellojavafx.view.GameView;
 import com.example.hellojavafx.view.alert.AlertBox;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 public class WelcomeController {
 
@@ -32,6 +34,7 @@ public class WelcomeController {
     private int size = 1;
     private boolean showBoard = false;
     private Image floatingImage;
+    private HashMap<String, Object>[][] positions;
 
     /**
      * Inicia el juego con el tamaño especificado.
@@ -40,13 +43,27 @@ public class WelcomeController {
      */
     @FXML
     public void startGame(ActionEvent event) throws IOException {
-        GameView gameView = new GameView();
+        GameView gameView = new GameView(positions);
         gameView.show();
     }
 
     @FXML
     public void initialize() {
-        //addButtons();
+        addButtons();
+        positions = createPositions();
+    }
+
+    public HashMap<String, Object>[][] createPositions() {
+        HashMap<String, Object>[][] positions = new HashMap[10][10];
+
+        // Inicializar cada HashMap en la matriz
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                positions[i][j] = new HashMap<>();
+                positions[i][j].put("used", 0);
+            }
+        }
+        return positions;
     }
 
     public void openInstructions(ActionEvent event) {
@@ -74,6 +91,57 @@ public class WelcomeController {
     }
 
     private void handleButtonAction(ActionEvent actionEvent) {
+        Button button = (Button) actionEvent.getSource();
+        Integer row = GridPane.getRowIndex(button);
+        Integer col = GridPane.getColumnIndex(button);
+
+        if (row == null || col == null) {
+            return;
+        }
+
+        boolean isValid = true;
+        for (int i = 0; i < size; i++) {
+            int targetRow = row + (orientation == 0 ? i : 0);
+            int targetCol = col + (orientation == 1 ? i : 0);
+            if (targetRow >= 10 || targetCol >= 10 || positions[targetRow][targetCol].containsKey("occupied")) {
+                isValid = false;
+                break;
+            }
+        }
+
+        if (isValid) {
+            int[][] coordinates = new int[size][2];
+            for (int i = 0; i < size; i++) {
+                int targetRow = row + (orientation == 0 ? i : 0);
+                int targetCol = col + (orientation == 1 ? i : 0);
+                positions[targetRow][targetCol].put("occupied", true);
+                positions[targetRow][targetCol].put("type", size);
+                coordinates[i][0] = targetRow;
+                coordinates[i][1] = targetCol;
+                Button targetButton = getButtonAt(targetRow, targetCol);
+                if (targetButton != null) {
+                    targetButton.setStyle("-fx-background-color: blue;");
+                }
+            }
+            for (int i = 0; i < size; i++) {
+                int targetRow = row + (orientation == 0 ? i : 0);
+                int targetCol = col + (orientation == 1 ? i : 0);
+                positions[targetRow][targetCol].put("coordinates", coordinates);
+            }
+            positions[row][col].put("canvas", new MyCanvas(new int[] {col*25, row*25}, orientation));
+            System.out.println("Valid position: row " + row + ", col " + col);
+            printPositions();
+        } else {
+            System.out.println("Invalid position: row " + row + ", col " + col);
+        }
+    }
+
+    private void printPositions() {
+        for (int i = 0; i < positions.length; i++) {
+            for (int j = 0; j < positions[i].length; j++) {
+                System.out.println("Position [" + i + "][" + j + "]: " + positions[i][j]);
+            }
+        }
     }
 
     private void handleMouseHover(MouseEvent event, int row, int col) {
@@ -123,7 +191,13 @@ public class WelcomeController {
     private void changeButtonColors(int row, int col) {
         for (Node node : paneBattle.getChildren()) {
             if (node instanceof javafx.scene.control.Button) {
-                node.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
+                int rowP = GridPane.getRowIndex(node);
+                int colP = GridPane.getColumnIndex(node);
+                if (positions[rowP][colP].containsKey("occupied")) {
+                    node.setStyle("-fx-background-color: blue;");
+                } else {
+                    node.setStyle("-fx-background-color: lightgray; -fx-border-color: black;");
+                }
             }
         }
 

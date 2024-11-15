@@ -12,9 +12,10 @@ import javafx.scene.layout.Pane;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.HashMap;
+
 public class GameController {
 
-    private Image imagen;
     @FXML
     private Pane PaneBattle; // Add a Pane to the FXML file and link it here
     private GraphicsContext gc;
@@ -24,12 +25,11 @@ public class GameController {
     private int orientation;
     private int iterador = 0;
 
-    public GameController() {
+    public GameController(HashMap<String, Object>[][] positions) {
         this.typeBoat = 0;
         this.rectx = 0;
         this.recty = 0;
         this.orientation = 0;
-
     }
     public void initialize() {
         Canvas mycanvas = new Canvas(250, 250);
