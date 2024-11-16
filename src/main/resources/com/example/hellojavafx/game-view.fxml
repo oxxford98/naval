@@ -45,6 +45,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
         </GridPane>
+        <Canvas fx:id="robotcanvas" visible="false" height="250.0" layoutX="370.0" layoutY="150.0" width="250.0" />
         <VBox layoutX="41.0" layoutY="78.0" prefHeight="256.0" prefWidth="30.0">
             <children>
                 <Label alignment="CENTER" prefHeight="30.0" prefWidth="28.0" text="A" />
@@ -107,6 +108,6 @@
                 <Label alignment="CENTER" prefHeight="26.0" prefWidth="28.0" text="J" />
             </children>
         </VBox>
-      <Button layoutX="376.0" layoutY="386.0" mnemonicParsing="false" text="Ver tablero de la maquina" />
+      <Button onAction="#drawRobotBoard" layoutX="376.0" layoutY="386.0" mnemonicParsing="false" text="Ver tablero de la maquina" />
     </children>
 </Pane>

@@ -23,6 +23,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.Random;
 
 public class WelcomeController {
 
@@ -40,6 +41,7 @@ public class WelcomeController {
     private int orientation = 1;
     private int size = 1;
     private HashMap<String, Object>[][] positions;
+    private HashMap<String, Object>[][] robotPositions;
     private int frigateCount = 0, destroyerCount = 0, submarineCount = 0, aircraftCount = 0;
     private String humanPlayerName;
     private String humanPlayerShipsCount;
@@ -57,14 +59,14 @@ public class WelcomeController {
             new AlertBox().showAlert("Error", "Nombre de usuario vacio", "Por favor ingrese un nombre de usuario");
             return;
         }
-        GameView gameView = new GameView(positions, false, username);
+        GameView gameView = new GameView(positions, robotPositions, false, username);
         gameView.show();
     }
 
     @FXML
     public void startOldGame(ActionEvent event) throws IOException {
         String username = humanPlayerName;
-        GameView gameView = new GameView(positions, true, username);
+        GameView gameView = new GameView(positions, robotPositions, true, username);
         gameView.show();
     }
 
@@ -72,6 +74,7 @@ public class WelcomeController {
     public void initialize() {
         addButtons();
         positions = createPositions();
+        robotPositions = generateBoardRobot();
         changeTotalShips();
         boolean oldGame = loadGameStateFromFile();
         if (oldGame) {
@@ -99,10 +102,32 @@ public class WelcomeController {
                 positions[i][j] = new HashMap<>();
                 positions[i][j].put("type", 0);
                 positions[i][j].put("used", 0);
-                positions[i][j].put("type", 0);
             }
         }
         return positions;
+    }
+
+    public HashMap<String, Object>[][] generateBoardRobot() {
+        HashMap<String, Object>[][] array = new HashMap[10][10];
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                array[i][j] = new HashMap<>();
+                array[i][j].put("used", 0);
+                array[i][j].put("type", 0);
+                array[i][j].put("ocuppied", 0);
+            }
+        }
+        array = generateAircraft(array);
+        for (int i = 0; i < 2; i++) {
+            array = generateSubmarine(array);
+        }
+        for (int i = 0; i < 3; i++) {
+            array = generateDestroyer(array);
+        }
+        for (int i = 0; i < 4; i++) {
+            array = generateFrigate(array);
+        }
+        return array;
     }
 
     public void openInstructions(ActionEvent event) {
@@ -341,5 +366,160 @@ public class WelcomeController {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private static HashMap<String, Object>[][] generateFrigate(HashMap<String, Object>[][] array) {
+        Random random = new Random();
+        int row, col;
+        boolean validPosition = false;
+
+        while (!validPosition) {
+            row = random.nextInt(10);
+            col = random.nextInt(10);
+
+            if ((int) array[row][col].get("ocuppied") == 0) {
+                array[row][col].put("type", 1);
+                array[row][col].put("ocuppied", 1);
+                MyCanvas canvas = new MyCanvas(new int[]{row, col}, 0);
+                array[row][col].put("canvas", canvas);
+                validPosition = true;
+            }
+        }
+        return array;
+    }
+
+    private static HashMap<String, Object>[][] generateDestroyer(HashMap<String, Object>[][] array) {
+        Random random = new Random();
+        int row, col, orientation;
+        boolean validPosition = false;
+
+        while (!validPosition) {
+            row = random.nextInt(10);
+            col = random.nextInt(10);
+            orientation = random.nextInt(2);
+
+            if (orientation == 0) {
+                if (row < 9 && (int) array[row][col].get("ocuppied") == 0 && (int) array[row + 1][col].get("ocuppied") == 0) {
+                    array[row][col].put("type", 2);
+                    array[row][col].put("ocuppied", 1);
+                    array[row][col].put("coordinates", new int[][]{{row, col}, {row + 1, col}});
+                    array[row + 1][col].put("type", 2);
+                    array[row + 1][col].put("ocuppied", 1);
+                    array[row + 1][col].put("coordinates", new int[][]{{row, col}, {row + 1, col}});
+                    MyCanvas canvas = new MyCanvas(new int[]{row, col}, 0);
+                    array[row][col].put("canvas", canvas);
+                    validPosition = true;
+                }
+            } else {
+                if (col < 9 && (int) array[row][col].get("ocuppied") == 0 && (int) array[row][col + 1].get("ocuppied") == 0) {
+                    array[row][col].put("type", 2);
+                    array[row][col].put("ocuppied", 1);
+                    array[row][col].put("coordinates", new int[][]{{row, col}, {row, col + 1}});
+                    array[row][col + 1].put("type", 2);
+                    array[row][col + 1].put("ocuppied", 1);
+                    array[row][col + 1].put("coordinates", new int[][]{{row, col}, {row, col + 1}});
+                    MyCanvas canvas = new MyCanvas(new int[]{row, col}, 1);
+                    array[row][col].put("canvas", canvas);
+                    validPosition = true;
+                }
+            }
+        }
+        return array;
+    }
+
+    private static HashMap<String, Object>[][] generateSubmarine(HashMap<String, Object>[][] array) {
+        Random random = new Random();
+        int row, col, orientation;
+        boolean validPosition = false;
+
+        while (!validPosition) {
+            row = random.nextInt(10);
+            col = random.nextInt(10);
+            orientation = random.nextInt(2);
+
+            if (orientation == 0) {
+                if (row < 8 && (int) array[row][col].get("ocuppied") == 0 && (int) array[row + 1][col].get("ocuppied") == 0 && (int) array[row + 2][col].get("ocuppied") == 0) {
+                    array[row][col].put("type", 3);
+                    array[row][col].put("ocuppied", 1);
+                    array[row][col].put("coordinates", new int[][]{{row, col}, {row + 1, col}, {row + 2, col}});
+                    array[row + 1][col].put("type", 3);
+                    array[row + 1][col].put("ocuppied", 1);
+                    array[row + 1][col].put("coordinates", new int[][]{{row, col}, {row + 1, col}, {row + 2, col}});
+                    array[row + 2][col].put("type", 3);
+                    array[row + 2][col].put("ocuppied", 1);
+                    array[row + 2][col].put("coordinates", new int[][]{{row, col}, {row + 1, col}, {row + 2, col}});
+                    MyCanvas canvas = new MyCanvas(new int[]{row, col}, 0);
+                    array[row][col].put("canvas", canvas);
+                    validPosition = true;
+                }
+            } else {
+                if (col < 8 && (int) array[row][col].get("ocuppied") == 0 && (int) array[row][col + 1].get("ocuppied") == 0 && (int) array[row][col + 2].get("ocuppied") == 0) {
+                    array[row][col].put("type", 3);
+                    array[row][col].put("ocuppied", 1);
+                    array[row][col].put("coordinates", new int[][]{{row, col}, {row, col + 1}, {row, col + 2}});
+                    array[row][col + 1].put("type", 3);
+                    array[row][col + 1].put("ocuppied", 1);
+                    array[row][col + 1].put("coordinates", new int[][]{{row, col}, {row, col + 1}, {row, col + 2}});
+                    array[row][col + 2].put("type", 3);
+                    array[row][col + 2].put("ocuppied", 1);
+                    array[row][col + 2].put("coordinates", new int[][]{{row, col}, {row, col + 1}, {row, col + 2}});
+                    MyCanvas canvas = new MyCanvas(new int[]{row, col}, 1);
+                    array[row][col].put("canvas", canvas);
+                    validPosition = true;
+                }
+            }
+        }
+        return array;
+    }
+
+    private static HashMap<String, Object>[][] generateAircraft(HashMap<String, Object>[][] array) {
+        Random random = new Random();
+        int row, col, orientation;
+        boolean validPosition = false;
+
+        while (!validPosition) {
+            row = random.nextInt(10);
+            col = random.nextInt(10);
+            orientation = random.nextInt(2);
+
+            if (orientation == 0) {
+                if (row < 7 && (int) array[row][col].get("ocuppied") == 0 && (int) array[row + 1][col].get("ocuppied") == 0 && (int) array[row + 2][col].get("ocuppied") == 0 && (int) array[row + 3][col].get("ocuppied") == 0) {
+                    array[row][col].put("type", 4);
+                    array[row][col].put("ocuppied", 1);
+                    array[row][col].put("coordinates", new int[][]{{row, col}, {row + 1, col}, {row + 2, col}, {row + 3, col}});
+                    array[row + 1][col].put("type", 4);
+                    array[row + 1][col].put("ocuppied", 1);
+                    array[row + 1][col].put("coordinates", new int[][]{{row, col}, {row + 1, col}, {row + 2, col}, {row + 3, col}});
+                    array[row + 2][col].put("type", 4);
+                    array[row + 2][col].put("ocuppied", 1);
+                    array[row + 2][col].put("coordinates", new int[][]{{row, col}, {row + 1, col}, {row + 2, col}, {row + 3, col}});
+                    array[row + 3][col].put("type", 4);
+                    array[row + 3][col].put("ocuppied", 1);
+                    array[row + 3][col].put("coordinates", new int[][]{{row, col}, {row + 1, col}, {row + 2, col}, {row + 3, col}});
+                    MyCanvas canvas = new MyCanvas(new int[]{row, col}, 0);
+                    array[row][col].put("canvas", canvas);
+                    validPosition = true;
+                }
+            } else {
+                if (col < 7 && (int) array[row][col].get("ocuppied") == 0 && (int) array[row][col + 1].get("ocuppied") == 0 && (int) array[row][col + 2].get("ocuppied") == 0 && (int) array[row][col + 3].get("ocuppied") == 0) {
+                    array[row][col].put("type", 4);
+                    array[row][col].put("ocuppied", 1);
+                    array[row][col].put("coordinates", new int[][]{{row, col}, {row, col + 1}, {row, col + 2}, {row, col + 3}});
+                    array[row][col + 1].put("type", 4);
+                    array[row][col + 1].put("ocuppied", 1);
+                    array[row][col + 1].put("coordinates", new int[][]{{row, col}, {row, col + 1}, {row, col + 2}, {row, col + 3}});
+                    array[row][col + 2].put("type", 4);
+                    array[row][col + 2].put("ocuppied", 1);
+                    array[row][col + 2].put("coordinates", new int[][]{{row, col}, {row, col + 1}, {row, col + 2}, {row, col + 3}});
+                    array[row][col + 3].put("type", 4);
+                    array[row][col + 3].put("ocuppied", 1);
+                    array[row][col + 3].put("coordinates", new int[][]{{row, col}, {row, col + 1}, {row, col + 2}, {row, col + 3}});
+                    MyCanvas canvas = new MyCanvas(new int[]{row, col}, 1);
+                    array[row][col].put("canvas", canvas);
+                    validPosition = true;
+                }
+            }
+        }
+        return array;
     }
 }

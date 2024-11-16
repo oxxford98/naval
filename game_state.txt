@@ -1,4 +1,4 @@
-HumanPlayer: lu
+HumanPlayer: as
 RobotPlayer: robot
-HumanPlayerShipsCount: 2
-RobotPlayerShipsCount: 0
+HumanPlayerShipsCount: 0
+RobotPlayerShipsCount: 2
