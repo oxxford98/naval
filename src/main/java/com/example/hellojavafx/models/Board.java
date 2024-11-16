@@ -4,9 +4,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Represents the game board for the Battleship game.
+ */
 public class Board implements Serializable {
     private ArrayList<ArrayList<HashMap<String, Object>>> board;
 
+    /**
+     * Constructs a new Board with the specified positions.
+     *
+     * @param positions The initial positions for the board.
+     */
     public Board(HashMap<String, Object>[][] positions) {
         this.board = new ArrayList<>();
         for (int i = 0; i < positions.length; i++) {
@@ -18,6 +26,11 @@ public class Board implements Serializable {
         }
     }
 
+    /**
+     * Returns the board as a list of rows.
+     *
+     * @return The board.
+     */
     public ArrayList<ArrayList<HashMap<String, Object>>> getBoard() {
         return board;
     }
@@ -41,6 +54,13 @@ public class Board implements Serializable {
         }
     }
 
+    /**
+     * Validates an attack on the specified position.
+     *
+     * @param row The row of the position to attack.
+     * @param col The column of the position to attack.
+     * @return A map containing the result of the attack.
+     */
     public HashMap<String, Object> validateAttack(int row, int col) {
         System.out.println("Validating attack at (" + row + ", " + col + ")");
         if (row >= 0 && row < 10 && col >= 0 && col < 10) {
@@ -103,6 +123,11 @@ public class Board implements Serializable {
         }
     }
 
+    /**
+     * Validates if the game has ended by checking if all ships are destroyed.
+     *
+     * @return True if the game has ended, false otherwise.
+     */
     public boolean validateEndGame() {
         for (ArrayList<HashMap<String, Object>> row : board) {
             for (HashMap<String, Object> cell : row) {

@@ -25,6 +25,9 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Random;
 
+/**
+ * Controller class for the welcome screen of the Battleship game.
+ */
 public class WelcomeController {
 
     @FXML
@@ -48,9 +51,9 @@ public class WelcomeController {
     private String robotPlayerShipsCount;
 
     /**
-     * Inicia el juego con el tamaño especificado.
+     * starts a new game with the speccified size.
      *
-     * @param event El evento de acción que desencadena el inicio del juego.
+     * @param event the action event that triggers the new game.
      */
     @FXML
     public void startNewGame(ActionEvent event) throws IOException {
@@ -63,6 +66,12 @@ public class WelcomeController {
         gameView.show();
     }
 
+    /**
+     * Starts an old game.
+     *
+     * @param event The action event that triggers the start of the old game.
+     * @throws IOException If an I/O error occurs.
+     */
     @FXML
     public void startOldGame(ActionEvent event) throws IOException {
         String username = humanPlayerName;
@@ -70,6 +79,9 @@ public class WelcomeController {
         gameView.show();
     }
 
+    /**
+     * Initializes the controller.
+     */
     @FXML
     public void initialize() {
         addButtons();
@@ -86,6 +98,9 @@ public class WelcomeController {
         }
     }
 
+    /**
+     * Updates the total ships count labels.
+     */
     private void changeTotalShips() {
         lblFrigate.setText(frigateCount + "/4");
         lblDestroyer.setText(destroyerCount + "/3");
@@ -93,10 +108,15 @@ public class WelcomeController {
         lblAircraft.setText(aircraftCount + "/1");
     }
 
+    /**
+     * Creates the positions for the game board.
+     *
+     * @return A 2D array of HashMaps representing the positions.
+     */
     public HashMap<String, Object>[][] createPositions() {
         HashMap<String, Object>[][] positions = new HashMap[10][10];
 
-        // Inicializar cada HashMap en la matriz
+
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 positions[i][j] = new HashMap<>();
@@ -107,6 +127,11 @@ public class WelcomeController {
         return positions;
     }
 
+    /**
+     * Opens the instructions file.
+     *
+     * @param event The action event that triggers the opening of the instructions.
+     */
     public HashMap<String, Object>[][] generateBoardRobot() {
         HashMap<String, Object>[][] array = new HashMap[10][10];
         for (int i = 0; i < 10; i++) {
@@ -139,6 +164,9 @@ public class WelcomeController {
         }
     }
 
+    /**
+     * Adds buttons to the game board.
+     */
     public void addButtons() {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -154,6 +182,11 @@ public class WelcomeController {
         }
     }
 
+    /**
+     * Handles the button action event.
+     *
+     * @param actionEvent The action event.
+     */
     private void handleButtonAction(ActionEvent actionEvent) {
         if (isCompleteBoard()) {
             new AlertBox().showAlert("Error", "Tablero completado", "Ya has completado el tablero y puedes iniciar un juego nuevo");
@@ -260,6 +293,11 @@ public class WelcomeController {
         }
     }
 
+    /**
+     * Checks if the board is complete.
+     *
+     * @return True if the board is complete, false otherwise.
+     */
     private boolean isCompleteBoard() {
         return frigateCount == 4 && destroyerCount == 3 && submarineCount == 2 && aircraftCount == 1;
     }
@@ -272,12 +310,22 @@ public class WelcomeController {
         }
     }
 
+    /**
+     * Handles the mouse hover event.
+     *
+     * @param event The mouse event.
+     * @param row   The row index.
+     * @param col   The column index.
+     */
     private void handleMouseHover(MouseEvent event, int row, int col) {
         if (!isCompleteBoard()) {
             changeButtonColors(col, row);
         }
     }
 
+    /**
+     * Handles the creation of a frigate.
+     */
     public void handleCreateFrigate() {
         if (frigateCount >= 4) {
             System.out.print("Frigate limit reached");
@@ -287,6 +335,9 @@ public class WelcomeController {
         }
     }
 
+    /**
+     * Handles the creation of a destroyer.
+     */
     public void handleCreateDestroyer() {
         if (destroyerCount >= 3) {
             System.out.print("Destroyer limit reached");
@@ -296,6 +347,9 @@ public class WelcomeController {
         }
     }
 
+    /**
+     * Handles the creation of a submarine.
+     */
     public void handleCreateSubmarine() {
         if (submarineCount >= 2) {
             System.out.print("Submarine limit reached");
@@ -305,6 +359,9 @@ public class WelcomeController {
         }
     }
 
+    /**
+     * Handles the creation of an aircraft.
+     */
     public void handleCreateAircraft() {
         if (aircraftCount >= 1) {
             System.out.print("Aircraft limit reached");
@@ -314,6 +371,12 @@ public class WelcomeController {
         }
     }
 
+    /**
+     * Changes the colors of the buttons on the game board.
+     *
+     * @param row The row index.
+     * @param col The column index.
+     */
     private void changeButtonColors(int row, int col) {
         for (Node node : paneBattle.getChildren()) {
             if (node instanceof javafx.scene.control.Button) {
@@ -339,6 +402,13 @@ public class WelcomeController {
         }
     }
 
+    /**
+     * Gets the button at the specified row and column.
+     *
+     * @param row The row index.
+     * @param col The column index.
+     * @return The button at the specified row and column, or null if not found.
+     */
     private javafx.scene.control.Button getButtonAt(int row, int col) {
         for (Node node : paneBattle.getChildren()) {
             if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == col) {
@@ -348,6 +418,11 @@ public class WelcomeController {
         return null;
     }
 
+    /**
+     * Loads the game state from a file.
+     *
+     * @return True if the game state was loaded successfully, false otherwise.
+     */
     public boolean loadGameStateFromFile() {
         String filePath = "game_state.txt";
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
