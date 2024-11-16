@@ -1,0 +1,4 @@
+HumanPlayer: pedro
+RobotPlayer: robot
+HumanPlayerShipsCount: 1
+RobotPlayerShipsCount: 0

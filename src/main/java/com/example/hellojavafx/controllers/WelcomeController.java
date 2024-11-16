@@ -7,7 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
@@ -17,7 +17,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -29,12 +31,17 @@ public class WelcomeController {
     @FXML
     private Button btnStartGame;
     @FXML
-    private Label lblFrigate, lblDestroyer, lblSubmarine, lblAircraft;
+    private Label lblFrigate, lblDestroyer, lblSubmarine, lblAircraft, lblUsername, countShipsUser, countShipsRobot;
+    @FXML
+    private TextField txtUsername;
 
     private int orientation = 1;
     private int size = 1;
     private HashMap<String, Object>[][] positions;
     private int frigateCount = 0, destroyerCount = 0, submarineCount = 0, aircraftCount = 0;
+    private String humanPlayerName;
+    private String humanPlayerShipsCount;
+    private String robotPlayerShipsCount;
 
     /**
      * Inicia el juego con el tamaño especificado.
@@ -43,13 +50,19 @@ public class WelcomeController {
      */
     @FXML
     public void startNewGame(ActionEvent event) throws IOException {
-        GameView gameView = new GameView(positions, false);
+        String username = txtUsername.getText();
+        if (username.isEmpty()) {
+            new AlertBox().showAlert("Error", "Nombre de usuario vacio", "Por favor ingrese un nombre de usuario");
+            return;
+        }
+        GameView gameView = new GameView(positions, false, username);
         gameView.show();
     }
 
     @FXML
     public void startOldGame(ActionEvent event) throws IOException {
-        GameView gameView = new GameView(positions, true);
+        String username = humanPlayerName;
+        GameView gameView = new GameView(positions, true, username);
         gameView.show();
     }
 
@@ -57,6 +70,20 @@ public class WelcomeController {
     public void initialize() {
         addButtons();
         positions = createPositions();
+        changeTotalShips();
+        boolean oldGame = loadGameStateFromFile();
+        if (oldGame) {
+            lblUsername.setText("Juego Guardado, usuario: "+humanPlayerName);
+            countShipsUser.setText("Barcos hundidos: "+humanPlayerShipsCount);
+            countShipsRobot.setText("Barcos hundidos maquina:"+robotPlayerShipsCount);
+        }
+    }
+
+    private void changeTotalShips() {
+        lblFrigate.setText(frigateCount + "/4");
+        lblDestroyer.setText(destroyerCount + "/3");
+        lblSubmarine.setText(submarineCount + "/2");
+        lblAircraft.setText(aircraftCount + "/1");
     }
 
     public HashMap<String, Object>[][] createPositions() {
@@ -187,6 +214,7 @@ public class WelcomeController {
                     aircraftCount++;
                     break;
             }
+            changeTotalShips();
             int[][] coords = (int[][]) positions[row][col].get("coordinates");
             for (int i = 0; i < coords.length; i++) {
                 System.out.println("Coordinates: " + coords[i][0] + ", " + coords[i][1]);
@@ -289,5 +317,25 @@ public class WelcomeController {
             }
         }
         return null;
+    }
+
+    public boolean loadGameStateFromFile() {
+        String filePath = "game_state.txt";
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("HumanPlayer: ")) {
+                    humanPlayerName = line.substring(13);
+                } else if (line.startsWith("HumanPlayerShipsCount: ")) {
+                    humanPlayerShipsCount = line.substring(22);
+                } else if (line.startsWith("RobotPlayerShipsCount: ")) {
+                    robotPlayerShipsCount = line.substring(22);
+                }
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

@@ -40,12 +40,12 @@ public class GameController {
     private Image imagen;
     private HashMap<String, Object>[][] positions;
 
-    public GameController(HashMap<String, Object>[][] positions, boolean loadGame) {
+    public GameController(HashMap<String, Object>[][] positions, boolean loadGame, String username) {
         this.loadGame = loadGame;
         if (loadGame) {
             this.HumanPlayerBoard = new Board(positions);
             robotPlayer = new RobotPlayer("robot");
-            HumanPlayer humanPlayer = new HumanPlayer("human", HumanPlayerBoard);
+            humanPlayer = new HumanPlayer(username, HumanPlayerBoard);
             loadGameState();
             this.isHumanTurn = true;
             this.typeBoat = 0;
@@ -60,7 +60,7 @@ public class GameController {
             this.rectx = 0;
             this.recty = 0;
             this.orientation = 0;
-            HumanPlayer humanPlayer = new HumanPlayer("human", HumanPlayerBoard);
+            humanPlayer = new HumanPlayer(username, HumanPlayerBoard);
             robotPlayer = new RobotPlayer("robot");
         }
     }
@@ -343,6 +343,41 @@ public class GameController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        filePath = "game_state.txt";
+        int humanCanvasCount = countCanvasWithStatus(HumanPlayerBoard);
+        int robotCanvasCount = countCanvasWithStatus(robotPlayer.getBoard());
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write("HumanPlayer: " + humanPlayer.getName());
+            writer.newLine();
+            writer.write("RobotPlayer: " + robotPlayer.getName());
+            writer.newLine();
+            writer.write("HumanPlayerShipsCount: " + humanCanvasCount);
+            writer.newLine();
+            writer.write("RobotPlayerShipsCount: " + robotCanvasCount);
+            System.out.println("Player names and canvas counts saved to " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Counts the number of objects in the board that have MyCanvas and status 2.
+     *
+     * @param board the board to count the objects in
+     * @return the count of objects with MyCanvas and status 2
+     */
+    private int countCanvasWithStatus(Board board) {
+        int count = 0;
+        for (ArrayList<HashMap<String, Object>> row : board.getBoard()) {
+            for (HashMap<String, Object> cell : row) {
+                if (cell.containsKey("canvas") && cell.containsKey("status") && (int) cell.get("status") == 2) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     public void loadGameState() {

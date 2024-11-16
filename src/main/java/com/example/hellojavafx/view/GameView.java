@@ -22,11 +22,11 @@ public class GameView extends Stage {
      *
      * @throws IOException Si no se puede cargar el archivo FXML.
      */
-    public GameView(HashMap<String, Object>[][] positions, boolean loadGame) throws IOException {
+    public GameView(HashMap<String, Object>[][] positions, boolean loadGame, String username) throws IOException {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/hellojavafx/game-view.fxml")
         );
-        loader.setController(new GameController(positions, loadGame));
+        loader.setController(new GameController(positions, loadGame, username));
         Parent root = loader.load();
         this.gameController = loader.getController();
         this.setTitle("Guerra Naval");
