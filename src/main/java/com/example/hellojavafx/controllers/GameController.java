@@ -28,6 +28,9 @@ import com.example.hellojavafx.models.Board;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+/**
+ * Controller class for managing the game logic and UI interactions.
+ */
 public class GameController {
     private HumanPlayer humanPlayer;
     private Board HumanPlayerBoard, RobotPlayerBoard;
@@ -49,6 +52,14 @@ public class GameController {
     private Image imagen;
     private HashMap<String, Object>[][] positions;
 
+    /**
+     * Constructs a new GameController with the specified parameters.
+     *
+     * @param positions The positions of the human player's ships.
+     * @param robotPositions The positions of the robot player's ships.
+     * @param loadGame Whether to load a saved game state.
+     * @param username The name of the human player.
+     */
     public GameController(HashMap<String, Object>[][] positions, HashMap<String, Object>[][] robotPositions, boolean loadGame, String username) {
         this.loadGame = loadGame;
         if (loadGame) {
@@ -76,6 +87,10 @@ public class GameController {
         }
     }
 
+    /**
+     * Initializes the game controller.
+     * Sets up the game board and UI elements.
+     */
     @FXML
     public void initialize() {
         printRobotBoard();
@@ -104,6 +119,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Adds buttons to the attack grid.
+     */
     public void addButtons() {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -116,6 +134,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Draws images on the buttons based on the robot player's board.
+     */
     private void drawImagesButtons() {
         Board robotBoard = RobotPlayerBoard;
         for (int i = 0; i < 10; i++) {
@@ -134,6 +155,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Draws the human player's board.
+     */
     private void drawHumanBoard() {
         int i = 0;
         for (ArrayList<HashMap<String, Object>> row : HumanPlayerBoard.getBoard()) {
@@ -165,6 +189,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Toggles the visibility of the robot's board.
+     *
+     * @param event The action event.
+     */
     public void drawRobotBoard(ActionEvent event) {
         showBoardRobot = !showBoardRobot;
         robotcanvas.setVisible(showBoardRobot);
@@ -209,6 +238,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Changes the status of the buttons in the attack grid.
+     *
+     * @param status The new status of the buttons.
+     */
     private void changeStatusButtons(boolean status) {
         for (Node node : paneAttack.getChildren()) {
             if (node instanceof Button) {
@@ -218,16 +252,35 @@ public class GameController {
         }
     }
 
+    /**
+     * Draws an attack on the canvas.
+     *
+     * @param row The row of the attack.
+     * @param col The column of the attack.
+     * @param image The image to draw.
+     */
     private void drawCanvasAttack(int row, int col, String image) {
         imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/"+image));
         gc.drawImage(imagen, col*25, row*25, 25, 25);
     }
 
+    /**
+     * Draws an attack on the robot's canvas.
+     *
+     * @param row The row of the attack.
+     * @param col The column of the attack.
+     * @param image The image to draw.
+     */
     private void drawCanvasRobotAttack(int row, int col, String image) {
         imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/"+image));
         rgc.drawImage(imagen, col*25, row*25, 25, 25);
     }
 
+    /**
+     * Handles the attack on a position.
+     *
+     * @param actionEvent The action event.
+     */
     private void getPositionAttack(ActionEvent actionEvent) {
         Button button = (Button) actionEvent.getSource();
         int row = GridPane.getRowIndex(button);
@@ -265,6 +318,13 @@ public class GameController {
         }
     }
 
+    /**
+     * Gets the node by row and column index.
+     *
+     * @param row The row index.
+     * @param col The column index.
+     * @return The node at the specified row and column index.
+     */
     private javafx.scene.control.Button getNodeByRowColumnIndex(int row, int col) {
         for (Node node : paneAttack.getChildren()) {
             Integer nodeRow = GridPane.getRowIndex(node);
@@ -276,16 +336,29 @@ public class GameController {
         return null;
     }
 
+    /**
+     * Handles the attack on a position.
+     *
+     * @param row The row of the attack.
+     * @param col The column of the attack.
+     * @return The result of the attack.
+     */
     public HashMap<String, Object> handleAttack(int row, int col) {
         Board currentBoard = isHumanTurn ? robotPlayer.getBoard() : HumanPlayerBoard;
         HashMap<String, Object> result = currentBoard.validateAttack(row, col);
         return result;
     }
 
+    /**
+     * Changes the turn between the human player and the robot player.
+     */
     private void changeTurn() {
         isHumanTurn = !isHumanTurn;
     }
 
+    /**
+     * Prints the human player's board to the console.
+     */
     private void printBoard() {
         for (ArrayList<HashMap<String, Object>> row : HumanPlayerBoard.getBoard()) {
             for (HashMap<String, Object> cell : row) {
@@ -295,6 +368,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Prints the robot player's board to the console.
+     */
     public void printRobotBoard() {
         for (ArrayList<HashMap<String, Object>> row : robotPlayer.getBoard().getBoard()) {
             for (HashMap<String, Object> cell : row) {
@@ -303,7 +379,12 @@ public class GameController {
             System.out.println();
         }
     }
-  
+
+    /**
+     * Sets the objects in the HashMap.
+     *
+     * @param array The array of HashMaps.
+     */
     public void setobjetoHashMap(HashMap<String, Object>[][] array) {
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[i].length; j++) {
@@ -327,7 +408,14 @@ public class GameController {
         }
     }
 
-
+    /**
+     * Draws a boat on the canvas.
+     *
+     * @param rectx The x-coordinate of the boat.
+     * @param rexy The y-coordinate of the boat.
+     * @param type The type of the boat.
+     * @param orientation The orientation of the boat.
+     */
     public void drawBoat(int rectx, int  rexy, int type, int orientation) {
         if(type==1){
             if(orientation==0){
@@ -364,6 +452,14 @@ public class GameController {
         }
     }
 
+    /**
+     * Draws a boat on the robot's canvas.
+     *
+     * @param rectx The x-coordinate of the boat.
+     * @param rexy The y-coordinate of the boat.
+     * @param type The type of the boat.
+     * @param orientation The orientation of the boat.
+     */
     public void drawBoatRobot(int rectx, int  rexy, int type, int orientation) {
         if (type == 1){
             if(orientation==0){
@@ -400,6 +496,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Handles the robot's attack logic.
+     * The robot randomly selects a position to attack until a valid position is found.
+     * If the robot wins the game, it shows an alert and deletes the game state files.
+     */
     private void robotAttack(){
         Random random = new Random();
         int row, col;
@@ -434,6 +535,10 @@ public class GameController {
         }while (turn);
     }
 
+    /**
+     * Saves the current game state to a file.
+     * The game state is saved to both a serialized file and a text file.
+     */
     public void saveGameState() {
         String filePath = "game_state.ser";
         try (FileOutputStream fileOut = new FileOutputStream(filePath);
@@ -481,6 +586,10 @@ public class GameController {
         return count;
     }
 
+    /**
+     * Loads the game state from a file.
+     * The game state is loaded from a serialized file.
+     */
     public void loadGameState() {
         String filePath = "game_state.ser";
         try (FileInputStream fileIn = new FileInputStream(filePath);
@@ -493,6 +602,10 @@ public class GameController {
         }
     }
 
+    /**
+     * Deletes the game state files.
+     * The method attempts to delete both the serialized file and the text file.
+     */
     public void deleteGameStateFiles() {
         String[] filePaths = {"game_state.ser", "game_state.txt"};
         for (String filePath : filePaths) {
@@ -509,6 +622,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Opens the instructions file in the default web browser.
+     *
+     * @param event The action event.
+     */
     public void openInstructions(ActionEvent event) {
         try {
             File file = new File(getClass().getResource("/com/example/hellojavafx/instrucciones.html").toURI());

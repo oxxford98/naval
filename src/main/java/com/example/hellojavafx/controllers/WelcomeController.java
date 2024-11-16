@@ -128,9 +128,9 @@ public class WelcomeController {
     }
 
     /**
-     * Opens the instructions file.
+     * Generates the board for the robot player.
      *
-     * @param event The action event that triggers the opening of the instructions.
+     * @return A 2D array of HashMaps representing the robot's board.
      */
     public HashMap<String, Object>[][] generateBoardRobot() {
         HashMap<String, Object>[][] array = new HashMap[10][10];
@@ -155,6 +155,11 @@ public class WelcomeController {
         return array;
     }
 
+    /**
+     * Opens the instructions file.
+     *
+     * @param event The action event that triggers the opening of the instructions.
+     */
     public void openInstructions(ActionEvent event) {
         try {
             File file = new File(getClass().getResource("/com/example/hellojavafx/instrucciones.html").toURI());
@@ -443,6 +448,12 @@ public class WelcomeController {
         return false;
     }
 
+    /**
+     * Generates a frigate on the board.
+     *
+     * @param array The board array.
+     * @return The updated board array.
+     */
     private static HashMap<String, Object>[][] generateFrigate(HashMap<String, Object>[][] array) {
         Random random = new Random();
         int row, col;
@@ -463,6 +474,12 @@ public class WelcomeController {
         return array;
     }
 
+    /**
+     * Generates a destroyer on the board.
+     *
+     * @param array The board array.
+     * @return The updated board array.
+     */
     private static HashMap<String, Object>[][] generateDestroyer(HashMap<String, Object>[][] array) {
         Random random = new Random();
         int row, col, orientation;
@@ -502,6 +519,12 @@ public class WelcomeController {
         return array;
     }
 
+    /**
+     * Generates a submarine on the board.
+     *
+     * @param array The board array.
+     * @return The updated board array.
+     */
     private static HashMap<String, Object>[][] generateSubmarine(HashMap<String, Object>[][] array) {
         Random random = new Random();
         int row, col, orientation;
@@ -547,6 +570,12 @@ public class WelcomeController {
         return array;
     }
 
+    /**
+     * Generates an aircraft on the board.
+     *
+     * @param array The board array.
+     * @return The updated board array.
+     */
     private static HashMap<String, Object>[][] generateAircraft(HashMap<String, Object>[][] array) {
         Random random = new Random();
         int row, col, orientation;
