@@ -30,17 +30,17 @@ import javafx.stage.WindowEvent;
 
 public class GameController {
     private HumanPlayer humanPlayer;
-    private Board HumanPlayerBoard;
+    private Board HumanPlayerBoard, RobotPlayerBoard;
     private RobotPlayer robotPlayer;
-    private boolean isHumanTurn, loadGame;
+    private boolean isHumanTurn, loadGame, showBoardRobot = false;
 
     @FXML
-    private Canvas mycanvas;
+    private Canvas mycanvas, robotcanvas;
     @FXML
     private GridPane paneAttack;
     @FXML
     private Pane PaneBattle;
-    private GraphicsContext gc;
+    private GraphicsContext gc, rgc;
     private int typeBoat;
     private double rectx;
     private double recty;
@@ -49,11 +49,12 @@ public class GameController {
     private Image imagen;
     private HashMap<String, Object>[][] positions;
 
-    public GameController(HashMap<String, Object>[][] positions, boolean loadGame, String username) {
+    public GameController(HashMap<String, Object>[][] positions, HashMap<String, Object>[][] robotPositions, boolean loadGame, String username) {
         this.loadGame = loadGame;
         if (loadGame) {
             this.HumanPlayerBoard = new Board(positions);
-            robotPlayer = new RobotPlayer("robot");
+            this.RobotPlayerBoard = new Board(robotPositions);
+            robotPlayer = new RobotPlayer("robot", RobotPlayerBoard);
             humanPlayer = new HumanPlayer(username, HumanPlayerBoard);
             loadGameState();
             this.isHumanTurn = true;
@@ -70,12 +71,14 @@ public class GameController {
             this.recty = 0;
             this.orientation = 0;
             humanPlayer = new HumanPlayer(username, HumanPlayerBoard);
-            robotPlayer = new RobotPlayer("robot");
+            this.RobotPlayerBoard = new Board(robotPositions);
+            robotPlayer = new RobotPlayer("robot", RobotPlayerBoard);
         }
     }
 
     @FXML
     public void initialize() {
+        printRobotBoard();
         Platform.runLater(() -> {
             Stage stage = (Stage) PaneBattle.getScene().getWindow();
             stage.setOnCloseRequest((WindowEvent event) -> {
@@ -114,7 +117,7 @@ public class GameController {
     }
 
     private void drawImagesButtons() {
-        Board robotBoard = robotPlayer.getBoard();
+        Board robotBoard = RobotPlayerBoard;
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 HashMap<String, Object> cell = robotBoard.getBoard().get(i).get(j);
@@ -162,6 +165,50 @@ public class GameController {
         }
     }
 
+    public void drawRobotBoard(ActionEvent event) {
+        showBoardRobot = !showBoardRobot;
+        robotcanvas.setVisible(showBoardRobot);
+        paneAttack.setVisible(!showBoardRobot);
+        rgc = robotcanvas.getGraphicsContext2D();
+        Image backgroundImage = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/fondo.png"));
+        rgc.drawImage(backgroundImage, 0, 0, robotcanvas.getWidth(), robotcanvas.getHeight());
+        rgc.setStroke(javafx.scene.paint.Color.BLACK);
+        // Draw the grid lines
+        for (int i = 0; i <= 250; i += 25) {
+            rgc.strokeLine(i, 0, i, 250);
+            rgc.strokeLine(0, i, 250, i);
+        }
+
+        int i = 0;
+        for (ArrayList<HashMap<String, Object>> row : RobotPlayerBoard.getBoard()) {
+            int j = 0;
+            for (HashMap<String, Object> map : row) {
+                try {
+                    int type = (int) map.get("type");
+                    if (type != 0) {
+                        MyCanvas canvas = (MyCanvas) map.get("canvas");
+                        if (canvas != null) {
+                            int[] coordinates = canvas.getCoordinates();
+                            int orientation = canvas.getOrientation();
+                            drawBoatRobot(coordinates[1]*25, coordinates[0]*25, type, orientation);
+                        } else {
+                            System.out.println("No hay un objeto Canvas en esta celda.");
+                        }
+                    }
+                    int used = (int) map.get("used");
+                    if (used == 1) {
+                        String image = (String) map.get("image");
+                        drawCanvasRobotAttack(i, j, image);
+                    }
+                } catch (NullPointerException e) {
+                    System.out.println("El valor de 'type' es null en la posición");
+                }
+                j++;
+            }
+            i++;
+        }
+    }
+
     private void changeStatusButtons(boolean status) {
         for (Node node : paneAttack.getChildren()) {
             if (node instanceof Button) {
@@ -174,6 +221,11 @@ public class GameController {
     private void drawCanvasAttack(int row, int col, String image) {
         imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/"+image));
         gc.drawImage(imagen, col*25, row*25, 25, 25);
+    }
+
+    private void drawCanvasRobotAttack(int row, int col, String image) {
+        imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/"+image));
+        rgc.drawImage(imagen, col*25, row*25, 25, 25);
     }
 
     private void getPositionAttack(ActionEvent actionEvent) {
@@ -285,7 +337,6 @@ public class GameController {
                 imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/1-h.png"));
                 gc.drawImage(imagen, rectx, rexy, 25, 25);
             }
-
         } else if (type==2) {
             if(orientation==0) {
                 imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/2.png"));
@@ -294,17 +345,14 @@ public class GameController {
                 imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/2-h.png"));
                 gc.drawImage(imagen, rectx, rexy, 50, 25);
             }
-
         } else if (type==3) {
             if(orientation==0) {
                 imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/3.png"));
                 gc.drawImage(imagen, rectx, rexy, 25, 75);
-
             } else if (orientation==1) {
                 imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/3-h.png"));
                 gc.drawImage(imagen, rectx, rexy, 75, 25);
             }
-
         }else if (type==4) {
             if(orientation==0) {
                 imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/4.png"));
@@ -313,9 +361,43 @@ public class GameController {
                 imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/4-h.png"));
                 gc.drawImage(imagen, rectx, rexy, 100, 25);
             }
-
         }
+    }
 
+    public void drawBoatRobot(int rectx, int  rexy, int type, int orientation) {
+        if (type == 1){
+            if(orientation==0){
+                imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/1.png"));
+                rgc.drawImage(imagen, rectx, rexy, 25, 25);
+            } else if (orientation==1) {
+                imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/1-h.png"));
+                rgc.drawImage(imagen, rectx, rexy, 25, 25);
+            }
+        } else if (type==2) {
+            if(orientation==0) {
+                imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/2.png"));
+                rgc.drawImage(imagen, rectx, rexy, 25, 50);
+            } else if (orientation==1) {
+                imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/2-h.png"));
+                rgc.drawImage(imagen, rectx, rexy, 50, 25);
+            }
+        } else if (type==3) {
+            if(orientation==0) {
+                imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/3.png"));
+                rgc.drawImage(imagen, rectx, rexy, 25, 75);
+            } else if (orientation==1) {
+                imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/3-h.png"));
+                rgc.drawImage(imagen, rectx, rexy, 75, 25);
+            }
+        }else if (type==4) {
+            if(orientation==0) {
+                imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/4.png"));
+                rgc.drawImage(imagen, rectx, rexy, 25, 100);
+            } else if (orientation==1) {
+                imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/4-h.png"));
+                rgc.drawImage(imagen, rectx, rexy, 100, 25);
+            }
+        }
     }
 
     private void robotAttack(){
@@ -404,7 +486,7 @@ public class GameController {
         try (FileInputStream fileIn = new FileInputStream(filePath);
              ObjectInputStream in = new ObjectInputStream(fileIn)) {
             HumanPlayerBoard = (Board) in.readObject();
-            robotPlayer.setBoard((Board) in.readObject());
+            RobotPlayerBoard = (Board) in.readObject();
             System.out.println("Game state loaded from " + filePath);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
