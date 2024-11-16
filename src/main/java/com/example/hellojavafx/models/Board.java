@@ -74,9 +74,8 @@ public class Board implements Serializable {
                 for (int[] coordinate : coordinates) {
                     int r = coordinate[0];
                     int c = coordinate[1];
-                    buttons.add(new int[]{r,c});
-                    if (row == r && col == c) {
-                        continue;
+                    if ((int) board.get(r).get(c).get("used") == 1) {
+                        buttons.add(new int[]{r,c});
                     }
                     if ((int) board.get(r).get(c).get("used") == 0) {
                         allHit = false;
@@ -87,6 +86,11 @@ public class Board implements Serializable {
                     result.put("status", 2);
                     result.put("image", "hundido.png");
                     cell.put("image", "hundido.png");
+                    for (int[] coordinate : coordinates) {
+                        int r = coordinate[0];
+                        int c = coordinate[1];
+                        board.get(r).get(c).put("image", "hundido.png");
+                    }
                 }
             }
             result.put("buttons",buttons);
