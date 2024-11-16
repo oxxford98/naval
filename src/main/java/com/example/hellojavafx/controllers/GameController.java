@@ -96,6 +96,31 @@ public class GameController {
         }
     }
 
+    public void testPositionAttack(ActionEvent actionEvent) {
+        Button button = (Button) actionEvent.getSource();
+        int row = GridPane.getRowIndex(button);
+        int col = GridPane.getColumnIndex(button);
+        Random random = new Random();
+        int status = random.nextInt(3);
+        String image = "";
+        if (status == 0) {
+            image = "x.png";
+        }
+        if (status == 1) {
+            image = "tocado.png";
+        }
+        if (status == 2) {
+            image = "hundido.png";
+        }
+        System.out.println("Human attacks (" + row + ", " + col + "), status: " + status + ", image: " + image);
+        drawCanvasAttack(row, col, image);
+    }
+
+    private void drawCanvasAttack(int row, int col, String image) {
+        imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/"+image));
+        gc.drawImage(imagen, col*25, row*25, 25, 25);
+    }
+
     private void getPositionAttack(ActionEvent actionEvent) {
         Button button = (Button) actionEvent.getSource();
         int row = GridPane.getRowIndex(button);
@@ -266,8 +291,5 @@ public class GameController {
             printRobotBoard();
         }
     }
-
-
-
 
 }

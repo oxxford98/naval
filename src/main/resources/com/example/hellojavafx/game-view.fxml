@@ -14,7 +14,7 @@
 <Pane fx:id="PaneBattle" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" style="-fx-background-image: a;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <Canvas fx:id="mycanvas" height="250.0" layoutX="70.0" layoutY="80.0" width="250.0" />
-        <GridPane fx:id="paneAttack" gridLinesVisible="true" layoutX="370.0" layoutY="80.0" prefHeight="250.0" prefWidth="250.0">
+        <GridPane fx:id="paneAttack" layoutX="370.0" layoutY="80.0" prefHeight="250.0" prefWidth="250.0">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
