@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Instrucciones del Juego - Guerra Naval</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">Juego de Guerra Naval - JavaFX</div>
+            <div class="card-body" >
+                <div class="d-flex justify-content-center">
+                    <h1>Bienvenido al juego de Guerra Naval<br></h1>
+                </div>
+                <h5>
+                    Guerra Naval es un juego donde se disputa una guerra entre dos flotas navales. Cada una tendrá 10 barcos disponibles para la batalla. 
+                    Antes de iniciar el juego, deberás registrar tu nombre y ubicar tus barcos en la zona de juego.<br><br>
+                </h5>
+                <div class="d-flex justify-content-center">
+                    <img src="images/pantalla_principal.png" class="img-fluid me-4" style="width: 550px; height: 600px;">
+                </div>
+                <div class="mt-4">
+                    <h2>Paso 1: Ubicación de los barcos</h2>
+                    <h5>Los barcos se seleccionan dando click encima de la imagen 
+                        y llevando el cursor hasta la posición donde quieras ubicarlos. 
+                        Luego, haz clic para confirmar la ubicación. si desea girar el 
+                        barco deberas dar click en la misma imagen, el juego solo te dejará
+                        colocar la cantidad barcos que aparecen debajo de cada imagen, si intentas
+                        adicionar otro barco mas de los permitidos o colocar el barco por fuera de 
+                        la zona de juego te mostrara un aviso de advertencia.<br><br><br>
+
+                    </h5>
+                    
+                    <div class="d-flex justify-content-center">
+                        <img src="images/paso1.png" class="img-fluid me-3" style="width: 350px; height: 400px;">
+                        <img src="images/paso1.1.png" class="img-fluid" style="width: 350px; height: 400px;">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h2>Paso 2</h2>
+                    <h5>
+                        Una vez ubicados todos los barcos en la zona de juego se habilitará el boton "Nuevo juego"
+                        e inmediatamente se abriá otra ventana en la cual podras iniciar el juego contra la máquina, 
+                        este tendra sus 10 navios escondidos, tendras el boton "Ver tablero de la maquina" el cual te permitirá
+                        los barcos de la máquina.<br><br>
+                    </h5>
+                    <div class="d-flex justify-content-center">
+                        <img src="images/paso2.png" class="img-fluid me-3" style="width: 350px; height: 400px;">
+                        <img src="images/paso22.png" class="img-fluid" style="width: 550px; height: 400px;">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h2>Paso 3</h2>
+                    <h5>
+                        El juego inicia con tu turno, tendras la posibilidad de disparar primero, para esto deberás dar click en alguna
+                        de las celdas donde creas que hay un barco de la maquina. si en la posicion que elegiste hay un barco la celda se marcara con un fuego
+                        si no, se marcará con una X, algunos de estos barcos ocupan varias celdas, estas celdas contienen parte de barco
+                        lo cual tendras que acertar a todas para poder destruirlo por completo.<br><br>
+                    </h5>
+                    <div class="d-flex justify-content-center">
+                        <img src="images/paso3.png" class="img-fluid me-3" style="width: 550px; height: 400px;">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h2>Paso 4</h2>
+                    <h5>
+                        Dispara buscando los barcos de la máquina y la maquina buscará tus barcos.<br><br>
+                    </h5>
+                    <div class="d-flex justify-content-center">
+                        <img src="images/paso4.png" class="img-fluid me-3" style="width: 550px; height: 400px;">
+                      
+                    </div>
+                    <div class="mt-4">
+                        <h2>Paso 5</h2>
+                        <h5>
+                            Una vez el jugador haya destruido todos los barcos de la máquina o la máquina haya destruido tus barcos
+                            aparecerá un mensaje informando quien ha ganado.<br><br>
+                        </h5>
+                        <div class="d-flex justify-content-center">
+                            <img src="images/paso5.png" class="img-fluid me-3" style="width: 550px; height: 400px;">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
