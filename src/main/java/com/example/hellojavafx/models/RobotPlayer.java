@@ -2,10 +2,7 @@ package com.example.hellojavafx.models;
 import com.example.hellojavafx.models.Board;
 import com.example.hellojavafx.models.Player;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class RobotPlayer extends Player {
     private int [] boat1;
@@ -36,19 +33,255 @@ public class RobotPlayer extends Player {
     private static HashMap<String, Object>[][] selectRandomPredefinedBoard() {
         HashMap<String, Object>[][] predefinedBoard1 = new HashMap[10][10];
         HashMap<String, Object>[][] predefinedBoard2 = new HashMap[10][10];
+        HashMap<String, Object>[][] predefinedBoard3 = new HashMap[10][10];
+        HashMap<String, Object>[][] predefinedBoard4 = new HashMap[10][10];
+        HashMap<String, Object>[][] predefinedBoard5 = new HashMap[10][10];
 
         initializePredefinedBoard(predefinedBoard1);
         initializePredefinedBoard(predefinedBoard2);
+        initializePredefinedBoard(predefinedBoard3);
+        initializePredefinedBoard(predefinedBoard4);
+        initializePredefinedBoard(predefinedBoard5);
 
+        List<HashMap<String, Object>[][]> predefinedBoards = new ArrayList<>();
+        predefinedBoards.add(predefinedBoard1);
+        predefinedBoards.add(predefinedBoard2);
+        predefinedBoards.add(predefinedBoard3);
+        predefinedBoards.add(predefinedBoard4);
+        predefinedBoards.add(predefinedBoard5);
+
+
+
+        // Barcos de tipo 1 (1 posición)
         predefinedBoard1[0][0].put("type", 1);
-        predefinedBoard1[0][1].put("type", 1);
+        predefinedBoard1[0][0].put("coordinates", new int[] {0, 0});
+        predefinedBoard1[0][0].put("canvas", new MyCanvas(new int[] {0, 0}, 0));
 
-        predefinedBoard2[1][0].put("type", 1);
-        predefinedBoard2[1][1].put("type", 1);
+        predefinedBoard1[2][3].put("type", 1);
+        predefinedBoard1[2][3].put("coordinates", new int[] {2, 3});
+        predefinedBoard1[2][3].put("canvas", new MyCanvas(new int[] {75, 50}, 0));
+
+        predefinedBoard1[4][7].put("type", 1);
+        predefinedBoard1[4][7].put("coordinates", new int[] {4, 7});
+        predefinedBoard1[4][7].put("canvas", new MyCanvas(new int[] {175, 100}, 0));
+
+        predefinedBoard1[7][1].put("type", 1);
+        predefinedBoard1[7][1].put("coordinates", new int[] {7, 1});
+        predefinedBoard1[7][1].put("canvas", new MyCanvas(new int[] {25, 175}, 0));
+
+// Barcos de tipo 2 (2 posiciones)
+        predefinedBoard1[1][5].put("type", 2);
+        predefinedBoard1[1][5].put("coordinates", new int[][] {{1, 5}, {1, 6}});
+        predefinedBoard1[1][5].put("canvas", new MyCanvas(new int[] {125, 25}, 0));
+
+        predefinedBoard1[3][2].put("type", 2);
+        predefinedBoard1[3][2].put("coordinates", new int[][] {{3, 2}, {4, 2}});
+        predefinedBoard1[3][2].put("canvas", new MyCanvas(new int[] {50, 75}, 0));
+
+        predefinedBoard1[6][8].put("type", 2);
+        predefinedBoard1[6][8].put("coordinates", new int[][] {{6, 8}, {6, 9}});
+        predefinedBoard1[6][8].put("canvas", new MyCanvas(new int[] {200, 150}, 0));
+
+// Barcos de tipo 3 (3 posiciones)
+        predefinedBoard1[5][0].put("type", 3);
+        predefinedBoard1[5][0].put("coordinates", new int[][] {{5, 0}, {5, 1}, {5, 2}});
+        predefinedBoard1[5][0].put("canvas", new MyCanvas(new int[] {0, 125}, 1));
+
+        predefinedBoard1[8][4].put("type", 3);
+        predefinedBoard1[8][4].put("coordinates", new int[][] {{8, 4}, {8, 5}, {8, 6}});
+        predefinedBoard1[8][4].put("canvas", new MyCanvas(new int[] {100, 200}, 1));
+
+// Barco de tipo 4 (4 posiciones)
+        predefinedBoard1[9][6].put("type", 4);
+        predefinedBoard1[9][6].put("coordinates", new int[][] {{9, 6}, {9, 7}, {9, 8}, {9, 9}});
+        predefinedBoard1[9][6].put("canvas", new MyCanvas(new int[] {150, 225}, 1));
+
+
+        // Barcos de tipo 1 (1 posición)
+        predefinedBoard2[0][3].put("type", 1);
+        predefinedBoard2[0][3].put("coordinates", new int[] {0, 3});
+        predefinedBoard2[0][3].put("canvas", new MyCanvas(new int[] {75, 0}, 0));
+
+        predefinedBoard2[1][7].put("type", 1);
+        predefinedBoard2[1][7].put("coordinates", new int[] {1, 7});
+        predefinedBoard2[1][7].put("canvas", new MyCanvas(new int[] {175, 25}, 0));
+
+        predefinedBoard2[5][5].put("type", 1);
+        predefinedBoard2[5][5].put("coordinates", new int[] {5, 5});
+        predefinedBoard2[5][5].put("canvas", new MyCanvas(new int[] {125, 125}, 0));
+
+        predefinedBoard2[8][9].put("type", 1);
+        predefinedBoard2[8][9].put("coordinates", new int[] {8, 9});
+        predefinedBoard2[8][9].put("canvas", new MyCanvas(new int[] {225, 200}, 0));
+
+// Barcos de tipo 2 (2 posiciones)
+        predefinedBoard2[0][8].put("type", 2);
+        predefinedBoard2[0][8].put("coordinates", new int[][] {{0, 8}, {0, 9}});
+        predefinedBoard2[0][8].put("canvas", new MyCanvas(new int[] {200, 0}, 0));
+
+        predefinedBoard2[3][0].put("type", 2);
+        predefinedBoard2[3][0].put("coordinates", new int[][] {{3, 0}, {3, 1}});
+        predefinedBoard2[3][0].put("canvas", new MyCanvas(new int[] {0, 75}, 0));
+
+        predefinedBoard2[6][4].put("type", 2);
+        predefinedBoard2[6][4].put("coordinates", new int[][] {{6, 4}, {7, 4}});
+        predefinedBoard2[6][4].put("canvas", new MyCanvas(new int[] {100, 150}, 0));
+
+// Barcos de tipo 3 (3 posiciones)
+        predefinedBoard2[2][6].put("type", 3);
+        predefinedBoard2[2][6].put("coordinates", new int[][] {{2, 6}, {2, 7}, {2, 8}});
+        predefinedBoard2[2][6].put("canvas", new MyCanvas(new int[] {150, 50}, 1));
+
+        predefinedBoard2[4][2].put("type", 3);
+        predefinedBoard2[4][2].put("coordinates", new int[][] {{4, 2}, {5, 2}, {6, 2}});
+        predefinedBoard2[4][2].put("canvas", new MyCanvas(new int[] {50, 100}, 1));
+
+// Barco de tipo 4 (4 posiciones)
+        predefinedBoard2[9][1].put("type", 4);
+        predefinedBoard2[9][1].put("coordinates", new int[][] {{9, 1}, {9, 2}, {9, 3}, {9, 4}});
+        predefinedBoard2[9][1].put("canvas", new MyCanvas(new int[] {25, 225}, 1));
+
+        // Barcos de tipo 1 (1 posición)
+        predefinedBoard3[1][0].put("type", 1);
+        predefinedBoard3[1][0].put("coordinates", new int[] {1, 0});
+        predefinedBoard3[1][0].put("canvas", new MyCanvas(new int[] {0, 25}, 0));
+
+        predefinedBoard3[3][4].put("type", 1);
+        predefinedBoard3[3][4].put("coordinates", new int[] {3, 4});
+        predefinedBoard3[3][4].put("canvas", new MyCanvas(new int[] {100, 75}, 0));
+
+        predefinedBoard3[6][9].put("type", 1);
+        predefinedBoard3[6][9].put("coordinates", new int[] {6, 9});
+        predefinedBoard3[6][9].put("canvas", new MyCanvas(new int[] {225, 150}, 0));
+
+        predefinedBoard3[9][5].put("type", 1);
+        predefinedBoard3[9][5].put("coordinates", new int[] {9, 5});
+        predefinedBoard3[9][5].put("canvas", new MyCanvas(new int[] {125, 225}, 0));
+
+// Barcos de tipo 2 (2 posiciones)
+        predefinedBoard3[0][6].put("type", 2);
+        predefinedBoard3[0][6].put("coordinates", new int[][] {{0, 6}, {0, 7}});
+        predefinedBoard3[0][6].put("canvas", new MyCanvas(new int[] {150, 0}, 0));
+
+        predefinedBoard3[4][8].put("type", 2);
+        predefinedBoard3[4][8].put("coordinates", new int[][] {{4, 8}, {5, 8}});
+        predefinedBoard3[4][8].put("canvas", new MyCanvas(new int[] {200, 100}, 0));
+
+        predefinedBoard3[7][3].put("type", 2);
+        predefinedBoard3[7][3].put("coordinates", new int[][] {{7, 3}, {8, 3}});
+        predefinedBoard3[7][3].put("canvas", new MyCanvas(new int[] {75, 175}, 0));
+
+// Barcos de tipo 3 (3 posiciones)
+        predefinedBoard3[2][1].put("type", 3);
+        predefinedBoard3[2][1].put("coordinates", new int[][] {{2, 1}, {2, 2}, {2, 3}});
+        predefinedBoard3[2][1].put("canvas", new MyCanvas(new int[] {25, 50}, 1));
+
+        predefinedBoard3[6][0].put("type", 3);
+        predefinedBoard3[6][0].put("coordinates", new int[][] {{6, 0}, {7, 0}, {8, 0}});
+        predefinedBoard3[6][0].put("canvas", new MyCanvas(new int[] {0, 150}, 1));
+
+// Barco de tipo 4 (4 posiciones)
+        predefinedBoard3[9][6].put("type", 4);
+        predefinedBoard3[9][6].put("coordinates", new int[][] {{9, 6}, {9, 7}, {9, 8}, {9, 9}});
+        predefinedBoard3[9][6].put("canvas", new MyCanvas(new int[] {150, 225}, 1));
+
+
+        // Barcos de tipo 1 (1 posición)
+        predefinedBoard4[0][2].put("type", 1);
+        predefinedBoard4[0][2].put("coordinates", new int[] {0, 2});
+        predefinedBoard4[0][2].put("canvas", new MyCanvas(new int[] {50, 0}, 0));
+
+        predefinedBoard4[2][6].put("type", 1);
+        predefinedBoard4[2][6].put("coordinates", new int[] {2, 6});
+        predefinedBoard4[2][6].put("canvas", new MyCanvas(new int[] {150, 50}, 0));
+
+        predefinedBoard4[5][3].put("type", 1);
+        predefinedBoard4[5][3].put("coordinates", new int[] {5, 3});
+        predefinedBoard4[5][3].put("canvas", new MyCanvas(new int[] {75, 125}, 0));
+
+        predefinedBoard4[9][2].put("type", 1);
+        predefinedBoard4[9][2].put("coordinates", new int[] {9, 2});
+        predefinedBoard4[9][2].put("canvas", new MyCanvas(new int[] {50, 225}, 0));
+
+// Barcos de tipo 2 (2 posiciones)
+        predefinedBoard4[1][8].put("type", 2);
+        predefinedBoard4[1][8].put("coordinates", new int[][] {{1, 8}, {1, 9}});
+        predefinedBoard4[1][8].put("canvas", new MyCanvas(new int[] {200, 25}, 0));
+
+        predefinedBoard4[3][1].put("type", 2);
+        predefinedBoard4[3][1].put("coordinates", new int[][] {{3, 1}, {4, 1}});
+        predefinedBoard4[3][1].put("canvas", new MyCanvas(new int[] {25, 75}, 0));
+
+        predefinedBoard4[7][4].put("type", 2);
+        predefinedBoard4[7][4].put("coordinates", new int[][] {{7, 4}, {8, 4}});
+        predefinedBoard4[7][4].put("canvas", new MyCanvas(new int[] {100, 175}, 0));
+
+// Barcos de tipo 3 (3 posiciones)
+        predefinedBoard4[0][7].put("type", 3);
+        predefinedBoard4[0][7].put("coordinates", new int[][] {{0, 7}, {0, 8}, {0, 9}});
+        predefinedBoard4[0][7].put("canvas", new MyCanvas(new int[] {175, 0}, 1));
+
+        predefinedBoard4[4][5].put("type", 3);
+        predefinedBoard4[4][5].put("coordinates", new int[][] {{4, 5}, {4, 6}, {4, 7}});
+        predefinedBoard4[4][5].put("canvas", new MyCanvas(new int[] {125, 100}, 1));
+
+// Barco de tipo 4 (4 posiciones)
+        predefinedBoard4[6][0].put("type", 4);
+        predefinedBoard4[6][0].put("coordinates", new int[][] {{6, 0}, {6, 1}, {6, 2}, {6, 3}});
+        predefinedBoard4[6][0].put("canvas", new MyCanvas(new int[] {0, 150}, 1));
+
+
+        // Barcos de tipo 1 (1 posición)
+        predefinedBoard5[1][4].put("type", 1);
+        predefinedBoard5[1][4].put("coordinates", new int[] {1, 4});
+        predefinedBoard5[1][4].put("canvas", new MyCanvas(new int[] {100, 25}, 0));
+
+        predefinedBoard5[3][7].put("type", 1);
+        predefinedBoard5[3][7].put("coordinates", new int[] {3, 7});
+        predefinedBoard5[3][7].put("canvas", new MyCanvas(new int[] {175, 75}, 0));
+
+        predefinedBoard5[6][2].put("type", 1);
+        predefinedBoard5[6][2].put("coordinates", new int[] {6, 2});
+        predefinedBoard5[6][2].put("canvas", new MyCanvas(new int[] {50, 150}, 0));
+
+        predefinedBoard5[8][9].put("type", 1);
+        predefinedBoard5[8][9].put("coordinates", new int[] {8, 9});
+        predefinedBoard5[8][9].put("canvas", new MyCanvas(new int[] {225, 200}, 0));
+
+// Barcos de tipo 2 (2 posiciones)
+        predefinedBoard5[0][6].put("type", 2);
+        predefinedBoard5[0][6].put("coordinates", new int[][] {{0, 6}, {0, 7}});
+        predefinedBoard5[0][6].put("canvas", new MyCanvas(new int[] {150, 0}, 0));
+
+        predefinedBoard5[4][3].put("type", 2);
+        predefinedBoard5[4][3].put("coordinates", new int[][] {{4, 3}, {4, 4}});
+        predefinedBoard5[4][3].put("canvas", new MyCanvas(new int[] {75, 100}, 0));
+
+        predefinedBoard5[7][8].put("type", 2);
+        predefinedBoard5[7][8].put("coordinates", new int[][] {{7, 8}, {7, 9}});
+        predefinedBoard5[7][8].put("canvas", new MyCanvas(new int[] {200, 175}, 0));
+
+// Barcos de tipo 3 (3 posiciones)
+        predefinedBoard5[2][1].put("type", 3);
+        predefinedBoard5[2][1].put("coordinates", new int[][] {{2, 1}, {2, 2}, {2, 3}});
+        predefinedBoard5[2][1].put("canvas", new MyCanvas(new int[] {25, 50}, 1));
+
+        predefinedBoard5[5][5].put("type", 3);
+        predefinedBoard5[5][5].put("coordinates", new int[][] {{5, 5}, {5, 6}, {5, 7}});
+        predefinedBoard5[5][5].put("canvas", new MyCanvas(new int[] {125, 125}, 1));
+
+// Barco de tipo 4 (4 posiciones)
+        predefinedBoard5[9][0].put("type", 4);
+        predefinedBoard5[9][0].put("coordinates", new int[][] {{9, 0}, {9, 1}, {9, 2}, {9, 3}});
+        predefinedBoard5[9][0].put("canvas", new MyCanvas(new int[] {0, 225}, 1));
 
         Random random = new Random();
-        int choice = random.nextInt(2);
-        return choice == 0 ? predefinedBoard1 : predefinedBoard2;
+        int choice = random.nextInt(predefinedBoards.size());
+        return predefinedBoards.get(choice);
+
+
+
+
 
         /*initializeBoardrandom();
         return array;*/
@@ -58,8 +291,10 @@ public class RobotPlayer extends Player {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 HashMap<String, Object> cell = new HashMap<>();
-                cell.put("type", 0);
                 cell.put("used", 0);
+                cell.put("type", 0);
+                cell.put("coordinates", new int[] {i, j});
+                cell.put("canvas", new MyCanvas(new int[] {j*25, i*25}, 0));
                 board[i][j] = cell;
             }
         }
@@ -74,6 +309,7 @@ public class RobotPlayer extends Player {
                 array[i][j].put("type", 0);
                 array[i][j].put("coordinates", new int[] {i, j});
                 array[i][j].put("canvas", new MyCanvas(new int[] {j*25, i*25}, 0));
+
             }
         }
         for(int i=0; i<4; i++){
