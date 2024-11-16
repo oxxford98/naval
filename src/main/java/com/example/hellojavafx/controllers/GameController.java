@@ -101,27 +101,28 @@ public class GameController {
         int row = GridPane.getRowIndex(button);
         int col = GridPane.getColumnIndex(button);
         HashMap<String, Object> response = handleAttack(row, col);
-        int[][] buttons = (int[][]) response.get("buttons");
+        ArrayList<int[]> buttons = (ArrayList<int[]>) response.get("buttons");
         int status = (int) response.get("status");
         String image = (String) response.get("image");
-        for (int i = 0; i < buttons.length; i++) {
-            for (int j = 0; j < buttons[i].length; j++) {
-                if (buttons[i][j] == 1) {
-                    Button button1 = (Button) getNodeByRowColumnIndex(i, j, paneAttack);
-                    Image img = new Image("@images/"+image);
-                    ImageView imageView = new ImageView(img);
-                    imageView.setFitWidth(25);
-                    imageView.setFitHeight(25);
-                    button1.setGraphic(imageView);
-                }
-            }
+        for (int[] buttonCoords : buttons){
+            int i = buttonCoords[0];
+            int j = buttonCoords[1];
+            Button button1 = (Button) getNodeByRowColumnIndex(i, j);
+            Image img = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/" + image));
+            ImageView imageView = new ImageView(img);
+            imageView.setFitWidth(25);
+            imageView.setFitHeight(25);
+            button1.setGraphic(imageView);
         }
+
     }
 
-    private Object getNodeByRowColumnIndex(int i, int j, GridPane paneAttack) {
+    private javafx.scene.control.Button getNodeByRowColumnIndex(int row, int col) {
         for (Node node : paneAttack.getChildren()) {
-            if (GridPane.getRowIndex(node) == i && GridPane.getColumnIndex(node) == j) {
-                return node;
+            Integer nodeRow = GridPane.getRowIndex(node);
+            Integer nodeCol = GridPane.getColumnIndex(node);
+            if (nodeRow != null && nodeCol != null && nodeRow == row && nodeCol == col) {
+                return (Button) node;
             }
         }
         return null;
