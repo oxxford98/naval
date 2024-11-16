@@ -3,6 +3,9 @@ import com.example.hellojavafx.models.HumanPlayer;
 import com.example.hellojavafx.models.MyCanvas;
 import com.example.hellojavafx.models.RobotPlayer;
 import com.example.hellojavafx.view.alert.AlertBox;
+import javafx.application.Platform;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -15,11 +18,15 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
+import java.awt.*;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import java.util.HashMap;
 import com.example.hellojavafx.models.Board;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class GameController {
     private HumanPlayer humanPlayer;
@@ -31,6 +38,8 @@ public class GameController {
     private Canvas mycanvas;
     @FXML
     private GridPane paneAttack;
+    @FXML
+    private Pane PaneBattle;
     private GraphicsContext gc;
     private int typeBoat;
     private double rectx;
@@ -65,7 +74,15 @@ public class GameController {
         }
     }
 
+    @FXML
     public void initialize() {
+        Platform.runLater(() -> {
+            Stage stage = (Stage) PaneBattle.getScene().getWindow();
+            stage.setOnCloseRequest((WindowEvent event) -> {
+                Platform.exit();
+                System.exit(0);
+            });
+        });
         gc = mycanvas.getGraphicsContext2D();
         Image backgroundImage = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/fondo.png"));
         gc.drawImage(backgroundImage, 0, 0, mycanvas.getWidth(), mycanvas.getHeight());
@@ -192,6 +209,7 @@ public class GameController {
         if (robotBoard.validateEndGame()) {
             new AlertBox().showAlert("Fin del juego", "Eres el ganador!!", "¡Felicidades!");
             changeStatusButtons(true);
+            deleteGameStateFiles();
         }
     }
 
@@ -328,6 +346,7 @@ public class GameController {
             if (HumanPlayerBoard.validateEndGame()) {
                 new AlertBox().showAlert("Fin del juego", "Has perdido", "Lo siento, la maquina ha derumbado todas tus naves");
                 changeStatusButtons(true);
+                deleteGameStateFiles();
                 turn = false;
             }
         }while (turn);
@@ -388,6 +407,31 @@ public class GameController {
             robotPlayer.setBoard((Board) in.readObject());
             System.out.println("Game state loaded from " + filePath);
         } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteGameStateFiles() {
+        String[] filePaths = {"game_state.ser", "game_state.txt"};
+        for (String filePath : filePaths) {
+            File file = new File(filePath);
+            if (file.exists()) {
+                if (file.delete()) {
+                    System.out.println(filePath + " deleted successfully.");
+                } else {
+                    System.out.println("Failed to delete " + filePath);
+                }
+            } else {
+                System.out.println(filePath + " does not exist.");
+            }
+        }
+    }
+
+    public void openInstructions(ActionEvent event) {
+        try {
+            File file = new File(getClass().getResource("/com/example/hellojavafx/instrucciones.html").toURI());
+            Desktop.getDesktop().browse(file.toURI());
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }

@@ -1,4 +1,4 @@
-HumanPlayer: pedro
+HumanPlayer: lu
 RobotPlayer: robot
-HumanPlayerShipsCount: 1
+HumanPlayerShipsCount: 2
 RobotPlayerShipsCount: 0

@@ -34,6 +34,8 @@ public class WelcomeController {
     private Label lblFrigate, lblDestroyer, lblSubmarine, lblAircraft, lblUsername, countShipsUser, countShipsRobot;
     @FXML
     private TextField txtUsername;
+    @FXML
+    private Button btnStartOldGame;
 
     private int orientation = 1;
     private int size = 1;
@@ -76,6 +78,8 @@ public class WelcomeController {
             lblUsername.setText("Juego Guardado, usuario: "+humanPlayerName);
             countShipsUser.setText("Barcos hundidos: "+humanPlayerShipsCount);
             countShipsRobot.setText("Barcos hundidos maquina:"+robotPlayerShipsCount);
+        } else {
+            btnStartOldGame.setDisable(true);
         }
     }
 

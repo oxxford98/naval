@@ -60,7 +60,7 @@
                </ImageView>
            </graphic>
        </Button>
-      <Button layoutX="420.0" layoutY="253.0" mnemonicParsing="false" onAction="#startOldGame" text="Cargar Juego anterior" />
+      <Button fx:id="btnStartOldGame" layoutX="420.0" layoutY="253.0" mnemonicParsing="false" onAction="#startOldGame" text="Cargar Juego anterior" />
       <Label fx:id="lblFrigate" layoutX="80.0" layoutY="527.0" text="4">
          <font>
             <Font size="20.0" />
