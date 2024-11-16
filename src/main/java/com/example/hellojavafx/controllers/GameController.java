@@ -78,7 +78,7 @@ public class GameController {
                 javafx.scene.control.Button button = new javafx.scene.control.Button();
                 button.setMinSize(25, 25);
                 button.setMaxSize(25, 25);
-                button.setOnAction(this::testPositionAttack);
+                button.setOnAction(this::getPositionAttack);
                 paneAttack.add(button, i, j);
             }
         }
@@ -101,20 +101,12 @@ public class GameController {
             image = "hundido.png";
         }
         System.out.println("Human attacks (" + row + ", " + col + "), status: " + status + ", image: " + image);
-        Image img = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/" + image));
-        ImageView imageView = new ImageView(img);
-        imageView.setFitWidth(25);
-        imageView.setFitHeight(25);
-        button.setGraphic(imageView);
+        drawCanvasAttack(row, col, image);
     }
 
     private void drawCanvasAttack(int row, int col, String image) {
-        Button button = (Button) getNodeByRowColumnIndex(row, col, paneAttack);
-        Image img = new Image("@images/"+image);
-        ImageView imageView = new ImageView(img);
-        imageView.setFitWidth(25);
-        imageView.setFitHeight(25);
-        button.setGraphic(imageView);
+        imagen = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/"+image));
+        gc.drawImage(imagen, col*25, row*25, 25, 25);
     }
 
     private void getPositionAttack(ActionEvent actionEvent) {
@@ -128,7 +120,7 @@ public class GameController {
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons[i].length; j++) {
                 if (buttons[i][j] == 1) {
-                    Button button1 = (Button) getNodeByRowColumnIndex(i, j, paneAttack);
+                    Button button1 = (Button) getNodeByRowColumnIndex(i, j);
                     Image img = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/" + image));
                     ImageView imageView = new ImageView(img);
                     imageView.setFitWidth(25);
@@ -139,10 +131,12 @@ public class GameController {
         }
     }
 
-    private Object getNodeByRowColumnIndex(int i, int j, GridPane paneAttack) {
+    private javafx.scene.control.Button getNodeByRowColumnIndex(int row, int col) {
         for (Node node : paneAttack.getChildren()) {
-            if (GridPane.getRowIndex(node) == i && GridPane.getColumnIndex(node) == j) {
-                return node;
+            Integer nodeRow = GridPane.getRowIndex(node);
+            Integer nodeCol = GridPane.getColumnIndex(node);
+            if (nodeRow != null && nodeCol != null && nodeRow == row && nodeCol == col) {
+                return (Button) node;
             }
         }
         return null;
