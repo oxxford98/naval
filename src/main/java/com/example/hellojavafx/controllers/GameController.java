@@ -49,19 +49,31 @@ public class GameController {
     }
     public void initialize() {
         gc = mycanvas.getGraphicsContext2D();
-//        Image backgroundImage = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/fondo.jpg"));
-//        gc.drawImage(backgroundImage, 0, 0, mycanvas.getWidth(), mycanvas.getHeight());
+        Image backgroundImage2 = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/hundido.png"));
+        ImageView imageView = new ImageView(backgroundImage2);
+
+        imageView.setFitWidth(PaneBattle.getWidth());  // Usar el tamaño del PaneBattle
+        imageView.setFitHeight(PaneBattle.getHeight()); // Ajusta el alto según el tamaño del Pane
+
+        // Establecer la posición de la imagen para que cubra todo el fondo
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);       // Habilitar suavizado para la imagen
+
+        // Agregar el ImageView al Pane
+        PaneBattle.getChildren().add(imageView);
+
+        Image backgroundImage = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/fondo.png"));
+        gc.drawImage(backgroundImage, 0, 0, mycanvas.getWidth(), mycanvas.getHeight());
         mycanvas.setStyle("-fx-background-color: blue;");
         // Draw the background color
-        gc.setFill(javafx.scene.paint.Color.BLUE);
-        gc.fillRect(0, 0, 250, 250);
-
-        // Draw the grid lines
-        gc.setStroke(javafx.scene.paint.Color.WHITE);
+        gc.setStroke(javafx.scene.paint.Color.BLACK);
         for (int i = 0; i <= 250; i += 25) {
             gc.strokeLine(i, 0, i, 250);
             gc.strokeLine(0, i, 250, i);
         }
+
+        // Draw the grid lines
+
         setobjetoHashMap(positions);
         HumanPlayer humanPlayer = new HumanPlayer("human", HumanPlayerBoard);
         robotPlayer = new RobotPlayer("robot");
@@ -114,21 +126,20 @@ public class GameController {
         int row = GridPane.getRowIndex(button);
         int col = GridPane.getColumnIndex(button);
         HashMap<String, Object> response = handleAttack(row, col);
-        int[][] buttons = (int[][]) response.get("items");
+        ArrayList<int[]> buttons = (ArrayList<int[]>) response.get("buttons");
         int status = (int) response.get("status");
         String image = (String) response.get("image");
-        for (int i = 0; i < buttons.length; i++) {
-            for (int j = 0; j < buttons[i].length; j++) {
-                if (buttons[i][j] == 1) {
-                    Button button1 = (Button) getNodeByRowColumnIndex(i, j);
-                    Image img = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/" + image));
-                    ImageView imageView = new ImageView(img);
-                    imageView.setFitWidth(25);
-                    imageView.setFitHeight(25);
-                    button1.setGraphic(imageView);
-                }
-            }
+        for (int[] buttonCoords : buttons){
+            int i = buttonCoords[0];
+            int j = buttonCoords[1];
+            Button button1 = (Button) getNodeByRowColumnIndex(i, j);
+            Image img = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/" + image));
+            ImageView imageView = new ImageView(img);
+            imageView.setFitWidth(25);
+            imageView.setFitHeight(25);
+            button1.setGraphic(imageView);
         }
+
     }
 
     private javafx.scene.control.Button getNodeByRowColumnIndex(int row, int col) {
@@ -199,12 +210,6 @@ public class GameController {
                             int[] coordinates = canvas.getCoordinates();
                             int orientation = canvas.getOrientation();
                             drawBoat(coordinates[0], coordinates[1], type, orientation);
-                            System.out.println("typeBoat: " + typeBoat);
-                            System.out.println("rectx: " + rectx);
-                            System.out.println("recty: " + recty);
-                            System.out.println("orientation: " + orientation);
-                            iterador++;
-                            System.out.println("############iterador: " + iterador);
                         } else {
                             System.out.println("No hay un objeto Canvas en esta celda.");
                         }

@@ -41,30 +41,36 @@ public class Board {
     }
 
     public HashMap<String, Object> validateAttack(int row, int col) {
+        System.out.println("Validating attack at (" + row + ", " + col + ")");
         if (row >= 0 && row < 10 && col >= 0 && col < 10) {
             HashMap<String, Object> cell = board.get(row).get(col);
             int type = (int) cell.get("type");
             HashMap<String, Object> result = new HashMap<>();
+            ArrayList<int[]> buttons = new ArrayList<>();
+            buttons.add(new int[]{row, col});
             if ((int) cell.get("used") == 1) {
-                result.put("status", -1); // Already attacked
-                result.put("items", new String[]{"already_attacked.png"});
+                result.put("status", -1);
+                result.put("buttons",buttons);
                 return result;
             }
             cell.put("used", 1);
             if (type == 0) {
                 result.put("status", 0);
-                result.put("items", new String[]{"x.png"});
+                result.put("image", "x.png");
+                result.put("buttons",buttons);
             } else if (type == 1) {
                 result.put("status", 2);
-                result.put("items", new String[]{"hundido.png"});
+                result.put("image", "hundido.png");
+                result.put("buttons",buttons);
             } else {
                 result.put("status", 1);
-                result.put("items", new String[]{"tocado.png"});
+                result.put("image", "tocado.png");
                 boolean allHit = true;
                 int[][] coordinates = (int[][]) cell.get("coordinates");
                 for (int[] coordinate : coordinates) {
                     int r = coordinate[0];
                     int c = coordinate[1];
+                    buttons.add(new int[]{r,c});
                     if ((int) board.get(r).get(c).get("used") == 0) {
                         allHit = false;
                         break;
@@ -72,14 +78,15 @@ public class Board {
                 }
                 if (allHit) {
                     result.put("status", 2);
-                    result.put("items", new String[]{"destruido.png"});
+                    result.put("image", "destruido.png");
                     for (int[] coordinate : coordinates) {
                         int r = coordinate[0];
                         int c = coordinate[1];
-                        board.get(r).get(c).put("items", new String[]{"destruido.png"});
+                        board.get(r).get(c).put("image", "destruido.png");
                     }
                 }
             }
+            result.put("buttons",buttons);
             return result;
         } else {
             throw new IndexOutOfBoundsException("Row and column must be between 0 and 9");
