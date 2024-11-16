@@ -1,6 +1,8 @@
 package com.example.hellojavafx.models;
 
-public class MyCanvas {
+import java.io.Serializable;
+
+public class MyCanvas implements Serializable {
     int[] coordinates;
     int orientation;
 

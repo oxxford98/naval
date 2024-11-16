@@ -42,8 +42,14 @@ public class WelcomeController {
      * @param event El evento de acción que desencadena el inicio del juego.
      */
     @FXML
-    public void startGame(ActionEvent event) throws IOException {
-        GameView gameView = new GameView(positions);
+    public void startNewGame(ActionEvent event) throws IOException {
+        GameView gameView = new GameView(positions, false);
+        gameView.show();
+    }
+
+    @FXML
+    public void startOldGame(ActionEvent event) throws IOException {
+        GameView gameView = new GameView(positions, true);
         gameView.show();
     }
 

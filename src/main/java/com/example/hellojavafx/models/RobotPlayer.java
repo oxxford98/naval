@@ -243,5 +243,7 @@ public class RobotPlayer extends Player {
         boat4 = new int[][]{{posx, posy}, {posx, posy + 1}, {posx, posy + 2}, {posx, posy + 3}};
     }
 
-
+    public void setBoard(Board board) {
+        super.setBoard(board);
+    }
 }
