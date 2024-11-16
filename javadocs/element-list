@@ -1,0 +1,6 @@
+module:com.example.hellojavafx
+com.example.hellojavafx
+com.example.hellojavafx.controllers
+com.example.hellojavafx.models
+com.example.hellojavafx.view
+com.example.hellojavafx.view.alert
