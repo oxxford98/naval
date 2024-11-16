@@ -1,4 +1,0 @@
-HumanPlayer: as
-RobotPlayer: robot
-HumanPlayerShipsCount: 0
-RobotPlayerShipsCount: 2
