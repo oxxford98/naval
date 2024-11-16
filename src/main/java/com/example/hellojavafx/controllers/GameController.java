@@ -310,8 +310,7 @@ public class GameController {
             robotAttack();
             saveGameState();
         }
-        Board robotBoard = robotPlayer.getBoard();
-        if (robotBoard.validateEndGame()) {
+        if (RobotPlayerBoard.validateEndGame()) {
             new AlertBox().showAlert("Fin del juego", "Eres el ganador!!", "¡Felicidades!");
             changeStatusButtons(true);
             deleteGameStateFiles();
@@ -344,7 +343,7 @@ public class GameController {
      * @return The result of the attack.
      */
     public HashMap<String, Object> handleAttack(int row, int col) {
-        Board currentBoard = isHumanTurn ? robotPlayer.getBoard() : HumanPlayerBoard;
+        Board currentBoard = isHumanTurn ? RobotPlayerBoard : HumanPlayerBoard;
         HashMap<String, Object> result = currentBoard.validateAttack(row, col);
         return result;
     }
