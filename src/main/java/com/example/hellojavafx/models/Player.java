@@ -1,6 +1,8 @@
 package com.example.hellojavafx.models;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player implements Serializable {
     private String name;
     private Board board;
 
@@ -15,5 +17,9 @@ public class Player {
 
     public Board getBoard(){
         return this.board;
+    }
+
+    protected void setBoard(Board board) {
+        this.board = board;
     }
 }

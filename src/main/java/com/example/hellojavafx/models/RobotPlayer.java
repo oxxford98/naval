@@ -38,4 +38,8 @@ public class RobotPlayer extends Player {
             }
         }
     }
+
+    public void setBoard(Board board) {
+        super.setBoard(board);
+    }
 }

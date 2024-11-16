@@ -2,6 +2,7 @@ package com.example.hellojavafx.controllers;
 import com.example.hellojavafx.models.HumanPlayer;
 import com.example.hellojavafx.models.MyCanvas;
 import com.example.hellojavafx.models.RobotPlayer;
+import com.example.hellojavafx.view.alert.AlertBox;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -14,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
+import java.io.*;
 import java.util.*;
 
 import java.util.HashMap;
@@ -23,7 +25,7 @@ public class GameController {
     private HumanPlayer humanPlayer;
     private Board HumanPlayerBoard;
     private RobotPlayer robotPlayer;
-    private boolean isHumanTurn;
+    private boolean isHumanTurn, loadGame;
 
     @FXML
     private Canvas mycanvas;
@@ -38,50 +40,48 @@ public class GameController {
     private Image imagen;
     private HashMap<String, Object>[][] positions;
 
-    public GameController(HashMap<String, Object>[][] positions) {
-        this.HumanPlayerBoard = new Board(positions);
-        this.isHumanTurn = true;
-        this.positions = positions;
-        this.typeBoat = 0;
-        this.rectx = 0;
-        this.recty = 0;
-        this.orientation = 0;
+    public GameController(HashMap<String, Object>[][] positions, boolean loadGame) {
+        this.loadGame = loadGame;
+        if (loadGame) {
+            this.HumanPlayerBoard = new Board(positions);
+            robotPlayer = new RobotPlayer("robot");
+            HumanPlayer humanPlayer = new HumanPlayer("human", HumanPlayerBoard);
+            loadGameState("game_state.ser");
+            this.isHumanTurn = true;
+            this.typeBoat = 0;
+            this.rectx = 0;
+            this.recty = 0;
+            this.orientation = 0;
+        } else {
+            this.HumanPlayerBoard = new Board(positions);
+            this.isHumanTurn = true;
+            this.positions = positions;
+            this.typeBoat = 0;
+            this.rectx = 0;
+            this.recty = 0;
+            this.orientation = 0;
+            HumanPlayer humanPlayer = new HumanPlayer("human", HumanPlayerBoard);
+            robotPlayer = new RobotPlayer("robot");
+        }
     }
+
     public void initialize() {
         gc = mycanvas.getGraphicsContext2D();
-        Image backgroundImage2 = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/hundido.png"));
-        ImageView imageView = new ImageView(backgroundImage2);
-
-        imageView.setFitWidth(PaneBattle.getWidth());  // Usar el tamaño del PaneBattle
-        imageView.setFitHeight(PaneBattle.getHeight()); // Ajusta el alto según el tamaño del Pane
-
-        // Establecer la posición de la imagen para que cubra todo el fondo
-        imageView.setPreserveRatio(true);
-        imageView.setSmooth(true);       // Habilitar suavizado para la imagen
-
-        // Agregar el ImageView al Pane
-        PaneBattle.getChildren().add(imageView);
-
         Image backgroundImage = new Image(getClass().getResourceAsStream("/com/example/hellojavafx/images/fondo.png"));
         gc.drawImage(backgroundImage, 0, 0, mycanvas.getWidth(), mycanvas.getHeight());
         mycanvas.setStyle("-fx-background-color: blue;");
-        // Draw the background color
-        gc.setStroke(javafx.scene.paint.Color.BLACK);
-        for (int i = 0; i <= 250; i += 25) {
-            gc.strokeLine(i, 0, i, 250);
-            gc.strokeLine(0, i, 250, i);
+        if (!loadGame) {
+            // Draw the background color
+            gc.setStroke(javafx.scene.paint.Color.BLACK);
+            for (int i = 0; i <= 250; i += 25) {
+                gc.strokeLine(i, 0, i, 250);
+                gc.strokeLine(0, i, 250, i);
+            }
+
+            // Draw the grid lines
+            setobjetoHashMap(positions);
+            addButtons();
         }
-
-        // Draw the grid lines
-
-        setobjetoHashMap(positions);
-        HumanPlayer humanPlayer = new HumanPlayer("human", HumanPlayerBoard);
-        robotPlayer = new RobotPlayer("robot");
-        printBoard();
-        System.out.println("tablero robot a partir de aqui");
-        printRobotBoard();
-        startGame();
-        addButtons();
     }
 
     public void addButtons() {
@@ -96,24 +96,13 @@ public class GameController {
         }
     }
 
-    public void testPositionAttack(ActionEvent actionEvent) {
-        Button button = (Button) actionEvent.getSource();
-        int row = GridPane.getRowIndex(button);
-        int col = GridPane.getColumnIndex(button);
-        Random random = new Random();
-        int status = random.nextInt(3);
-        String image = "";
-        if (status == 0) {
-            image = "x.png";
+    private void changeStatusButtons(boolean status) {
+        for (Node node : paneAttack.getChildren()) {
+            if (node instanceof Button) {
+                Button button = (Button) node;
+                button.setDisable(status);
+            }
         }
-        if (status == 1) {
-            image = "tocado.png";
-        }
-        if (status == 2) {
-            image = "hundido.png";
-        }
-        System.out.println("Human attacks (" + row + ", " + col + "), status: " + status + ", image: " + image);
-        drawCanvasAttack(row, col, image);
     }
 
     private void drawCanvasAttack(int row, int col, String image) {
@@ -128,6 +117,10 @@ public class GameController {
         HashMap<String, Object> response = handleAttack(row, col);
         ArrayList<int[]> buttons = (ArrayList<int[]>) response.get("buttons");
         int status = (int) response.get("status");
+        if (status == -1) {
+            new AlertBox().showAlert("Error", "Posicion invalida", "Ya has atacado esta posición");
+            return;
+        }
         String image = (String) response.get("image");
         for (int[] buttonCoords : buttons){
             int i = buttonCoords[0];
@@ -139,7 +132,18 @@ public class GameController {
             imageView.setFitHeight(25);
             button1.setGraphic(imageView);
         }
-
+        saveGameState("game_state.ser");
+        if (status == 0) {
+            changeTurn();
+            changeStatusButtons(true);
+            robotAttack();
+            saveGameState("game_state.ser");
+        }
+        Board robotBoard = robotPlayer.getBoard();
+        if (robotBoard.validateEndGame()) {
+            new AlertBox().showAlert("Fin del juego", "Eres el ganador!!", "¡Felicidades!");
+            changeStatusButtons(true);
+        }
     }
 
     private javafx.scene.control.Button getNodeByRowColumnIndex(int row, int col) {
@@ -156,23 +160,11 @@ public class GameController {
     public HashMap<String, Object> handleAttack(int row, int col) {
         Board currentBoard = isHumanTurn ? robotPlayer.getBoard() : HumanPlayerBoard;
         HashMap<String, Object> result = currentBoard.validateAttack(row, col);
-        int status = (int) result.get("status");
-
-        // Si el ataque falla (status = 0), cambia el turno
-        if (status == 0) {
-            changeTurn();
-        }
-
-        // Actualiza la vista del juego según el resultado del ataque
         return result;
     }
 
     private void changeTurn() {
         isHumanTurn = !isHumanTurn;
-    }
-
-    public boolean isHumanTurn() {
-        return isHumanTurn;
     }
 
     private void printBoard() {
@@ -192,13 +184,8 @@ public class GameController {
             System.out.println();
         }
     }
-
-    public Board getHumanPlayerBoard() {
-        return HumanPlayerBoard;
-    }
   
     public void setobjetoHashMap(HashMap<String, Object>[][] array) {
-
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[i].length; j++) {
                 HashMap<String, Object> map = array[i][j];
@@ -267,28 +254,55 @@ public class GameController {
     private void robotAttack(){
         Random random = new Random();
         int row, col;
+        boolean turn = true;
         do{
             row = random.nextInt(10);
             col = random.nextInt(10);
-        }while ((int) HumanPlayerBoard.getBoard().get(row).get(col).get("used") == 1);
+            HashMap<String, Object> response = handleAttack(row, col);
+            ArrayList<int[]> buttons = (ArrayList<int[]>) response.get("buttons");
+            int status = (int) response.get("status");
+            if (status == -1) {
+                continue;
+            }
+            String image = (String) response.get("image");
+            for (int[] buttonCoords : buttons){
+                int i = buttonCoords[0];
+                int j = buttonCoords[1];
+                drawCanvasAttack(i, j, image);
+            }
+            if (status == 0) {
+                changeTurn();
+                changeStatusButtons(false);
+                turn = false;
+            }
 
-        handleAttack(row, col);
+            if (HumanPlayerBoard.validateEndGame()) {
+                new AlertBox().showAlert("Fin del juego", "Has perdido", "Lo siento, la maquina ha derumbado todas tus naves");
+                changeStatusButtons(true);
+                turn = false;
+            }
+        }while (turn);
     }
 
-    public void startGame() {
-        for (int i = 0; i < 5; i++) {
-            if (isHumanTurn()) {
-                Random random = new Random();
-                int row = random.nextInt(10);
-                int col = random.nextInt(10);
-                handleAttack(row, col);
-                System.out.println("Human attacks (" + row + ", " + col + ")");
-            } else {
-                robotAttack();
-                System.out.println("Robot attacks");
-            }
-            printBoard();
-            printRobotBoard();
+    public void saveGameState(String filePath) {
+        try (FileOutputStream fileOut = new FileOutputStream(filePath);
+             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+            out.writeObject(HumanPlayerBoard);
+            out.writeObject(robotPlayer.getBoard());
+            System.out.println("Game state saved to " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadGameState(String filePath) {
+        try (FileInputStream fileIn = new FileInputStream(filePath);
+             ObjectInputStream in = new ObjectInputStream(fileIn)) {
+            HumanPlayerBoard = (Board) in.readObject();
+            robotPlayer.setBoard((Board) in.readObject());
+            System.out.println("Game state loaded from " + filePath);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

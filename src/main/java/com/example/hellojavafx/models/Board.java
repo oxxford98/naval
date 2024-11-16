@@ -1,9 +1,10 @@
 package com.example.hellojavafx.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Board {
+public class Board implements Serializable {
     private ArrayList<ArrayList<HashMap<String, Object>>> board;
 
     public Board(HashMap<String, Object>[][] positions) {
@@ -50,27 +51,33 @@ public class Board {
             buttons.add(new int[]{row, col});
             if ((int) cell.get("used") == 1) {
                 result.put("status", -1);
-                result.put("buttons",buttons);
+                result.put("buttons", buttons);
                 return result;
             }
             cell.put("used", 1);
             if (type == 0) {
+                cell.put("image", "x.png");
                 result.put("status", 0);
                 result.put("image", "x.png");
                 result.put("buttons",buttons);
             } else if (type == 1) {
+                cell.put("image", "hundido.png");
                 result.put("status", 2);
                 result.put("image", "hundido.png");
                 result.put("buttons",buttons);
             } else {
                 result.put("status", 1);
                 result.put("image", "tocado.png");
+                cell.put("image", "tocado.png");
                 boolean allHit = true;
                 int[][] coordinates = (int[][]) cell.get("coordinates");
                 for (int[] coordinate : coordinates) {
                     int r = coordinate[0];
                     int c = coordinate[1];
                     buttons.add(new int[]{r,c});
+                    if (row == r && col == c) {
+                        continue;
+                    }
                     if ((int) board.get(r).get(c).get("used") == 0) {
                         allHit = false;
                         break;
@@ -78,12 +85,8 @@ public class Board {
                 }
                 if (allHit) {
                     result.put("status", 2);
-                    result.put("image", "destruido.png");
-                    for (int[] coordinate : coordinates) {
-                        int r = coordinate[0];
-                        int c = coordinate[1];
-                        board.get(r).get(c).put("image", "destruido.png");
-                    }
+                    result.put("image", "hundido.png");
+                    cell.put("image", "hundido.png");
                 }
             }
             result.put("buttons",buttons);
@@ -93,5 +96,15 @@ public class Board {
         }
     }
 
+    public boolean validateEndGame() {
+        for (ArrayList<HashMap<String, Object>> row : board) {
+            for (HashMap<String, Object> cell : row) {
+                if ((int) cell.get("type") > 0 && (int) cell.get("used") == 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
 }
